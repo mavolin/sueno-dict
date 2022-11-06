@@ -3,6 +3,7 @@ module github.com/mavolin/sueno-dict
 go 1.19
 
 require (
+	github.com/caarlos0/env/v6 v6.10.1
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-playground/form v3.1.4+incompatible
 	github.com/pkg/errors v0.9.1
