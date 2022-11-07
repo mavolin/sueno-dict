@@ -130,9 +130,15 @@ func (h *Handler) searchWord(gctx *gin.Context) {
 	h.renderNotFound(gctx)
 }
 
+//go:generate corgi not_found.corgi
+
 func (h *Handler) renderNotFound(gctx *gin.Context) {
 	gctx.Status(http.StatusNotFound)
-	// todo: render
+
+	if err := RenderNotFound(gctx.Writer, gctx.Query("q")); err != nil {
+		gctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
 }
 
 //go:generate corgi entry.corgi
