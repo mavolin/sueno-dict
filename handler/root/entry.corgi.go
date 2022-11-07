@@ -340,43 +340,32 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 				if err != nil {
 					return err
 				}
-				_closed = false
-				err = _writeutil.Write(_w, "</em></div><div class=\"c-entry-section__body\"><ol")
-				if err != nil {
-					return err
-				}
-				if !_closed {
-					_closed = true
-					err = _writeutil.Write(_w, " class=\"c-defintions\">")
+				_closed = true
+				{
+					_closed = false
+					err = _writeutil.Write(_w, "</em></div><div class=\"c-entry-section__body\"><ol")
 					if err != nil {
 						return err
 					}
-				}
-				for i < len(word.Definitions) {
-					def := word.Definitions[i]
-					if i > 0 && prevType != def.Type {
-						break
-					}
-					_closed = true
-					err = _writeutil.Write(_w, "<li class=\"c-definition\"><div><span class=\"c-definition__translation\">")
-					if err != nil {
-						return err
-					}
-					err = _writeutil.WriteHTML(_w, def.Translation)
-					if err != nil {
-						return err
-					}
-					err = _writeutil.Write(_w, "</span>")
-					if err != nil {
-						return err
-					}
-					if def.Definition != "" {
+					prevType = firstDefinition.Type
+					if !_closed {
 						_closed = true
-						err = _writeutil.Write(_w, "<span class=\"c-definition__definition\">&mdash;")
+						err = _writeutil.Write(_w, " class=\"c-defintions\">")
 						if err != nil {
 							return err
 						}
-						err = _writeutil.WriteHTML(_w, def.Definition)
+					}
+					for i < len(word.Definitions) {
+						def := word.Definitions[i]
+						if prevType != def.Type {
+							break
+						}
+						_closed = true
+						err = _writeutil.Write(_w, "<li class=\"c-definition\"><div><span class=\"c-definition__translation\">")
+						if err != nil {
+							return err
+						}
+						err = _writeutil.WriteHTML(_w, def.Translation)
 						if err != nil {
 							return err
 						}
@@ -384,40 +373,55 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 						if err != nil {
 							return err
 						}
+						if def.Definition != "" {
+							_closed = true
+							err = _writeutil.Write(_w, "<span class=\"c-definition__definition\">&mdash;")
+							if err != nil {
+								return err
+							}
+							err = _writeutil.WriteHTML(_w, def.Definition)
+							if err != nil {
+								return err
+							}
+							err = _writeutil.Write(_w, "</span>")
+							if err != nil {
+								return err
+							}
+						}
+						err = _writeutil.Write(_w, "</div>")
+						if err != nil {
+							return err
+						}
+						if def.Example != "" {
+							_closed = true
+							err = _writeutil.Write(_w, "<div class=\"c-definition__example-line\"><span class=\"c-definition__example\">")
+							if err != nil {
+								return err
+							}
+							err = _writeutil.WriteHTML(_w, def.Example)
+							if err != nil {
+								return err
+							}
+							_closed = true
+							err = _writeutil.Write(_w, "</span><span class=\"c-definition__example-translation\">&mdash;")
+							if err != nil {
+								return err
+							}
+							err = _writeutil.WriteHTML(_w, def.ExampleTranslation)
+							if err != nil {
+								return err
+							}
+							err = _writeutil.Write(_w, "</span></div>")
+							if err != nil {
+								return err
+							}
+						}
+						err = _writeutil.Write(_w, "</li>")
+						if err != nil {
+							return err
+						}
+						i++
 					}
-					err = _writeutil.Write(_w, "</div>")
-					if err != nil {
-						return err
-					}
-					if def.Example != "" {
-						_closed = true
-						err = _writeutil.Write(_w, "<div class=\"c-definition__example-line\"><span class=\"c-definition__example\">")
-						if err != nil {
-							return err
-						}
-						err = _writeutil.WriteHTML(_w, def.Example)
-						if err != nil {
-							return err
-						}
-						_closed = true
-						err = _writeutil.Write(_w, "</span><span class=\"c-definition__example-translation\">&mdash;")
-						if err != nil {
-							return err
-						}
-						err = _writeutil.WriteHTML(_w, def.ExampleTranslation)
-						if err != nil {
-							return err
-						}
-						err = _writeutil.Write(_w, "</span></div>")
-						if err != nil {
-							return err
-						}
-					}
-					err = _writeutil.Write(_w, "</li>")
-					if err != nil {
-						return err
-					}
-					i++
 				}
 				err = _writeutil.Write(_w, "</ol></div></div>")
 				if err != nil {

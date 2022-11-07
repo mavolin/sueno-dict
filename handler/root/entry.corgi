@@ -83,9 +83,10 @@ block body
 
               .c-entry-section__body
                 ol.c-defintions
+                  - prevType = firstDefinition.Type
                   while i < len(word.Definitions)
                     - def := word.Definitions[i]
-                    if i > 0 && prevType != def.Type
+                    if prevType != def.Type
                       - break
 
                     li.c-definition
