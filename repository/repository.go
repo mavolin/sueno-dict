@@ -15,7 +15,7 @@ type Repository interface {
 	CreateWord(context.Context, Word) (WordID, error)
 	Word(context.Context, WordID) (*Word, error)
 	SearchWord(context.Context, string) (*Word, error)
-	SearchTranslation(context.Context, string) ([]Word, error)
+	SearchTranslation(context.Context, string) ([]TranslatedWord, error)
 }
 
 // ============================================================================
@@ -42,14 +42,21 @@ func ParseWordID(s string) (WordID, error) {
 	return WordID(idInt), nil
 }
 
-type Word struct {
-	ID   WordID `gorm:"primary_key"`
-	Word string
-	Root string
+type (
+	Word struct {
+		ID   WordID `gorm:"primary_key"`
+		Word string
+		Root string
 
-	Definitions   []Definition `gorm:"foreignkey:WordID"`
-	CompoundWords []Word       `gorm:"-"`
-}
+		Definitions   []Definition `gorm:"foreignKey:WordID"`
+		CompoundWords []Word       `gorm:"-"`
+	}
+
+	TranslatedWord struct {
+		Word
+		MatchedDefinition Definition `gorm:"-"`
+	}
+)
 
 // ============================================================================
 // Definition

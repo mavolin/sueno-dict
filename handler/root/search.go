@@ -11,8 +11,6 @@ import (
 	"github.com/mavolin/sueno-dict/repository"
 )
 
-//go:generate corgi entry.corgi
-
 func (h *Handler) searchWord(gctx *gin.Context) {
 	query := gctx.Query("q")
 	if query == "" {
@@ -39,18 +37,19 @@ func (h *Handler) searchWord(gctx *gin.Context) {
 		h.renderEntry(gctx, *w)
 		return
 	case "translation":
-		tr, err := h.repo.SearchTranslation(ctx, query)
+		ts, err := h.repo.SearchTranslation(ctx, query)
 		if err != nil {
 			gctx.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
 
-		if len(tr) == 0 {
+		if len(ts) == 0 {
 			h.renderNotFound(gctx)
 			return
 		}
 
-		// todo: render
+		h.renderTranslationSearchResult(gctx, ts)
+		return
 	}
 
 	// There are no ordinal pages, just cardinal pages.
@@ -83,7 +82,7 @@ func (h *Handler) searchWord(gctx *gin.Context) {
 	}
 
 	if len(tr) > 0 {
-		// todo: render
+		h.renderTranslationSearchResult(gctx, tr)
 		return
 	}
 
@@ -132,8 +131,11 @@ func (h *Handler) searchWord(gctx *gin.Context) {
 }
 
 func (h *Handler) renderNotFound(gctx *gin.Context) {
+	gctx.Status(http.StatusNotFound)
 	// todo: render
 }
+
+//go:generate corgi entry.corgi
 
 func (h *Handler) renderEntry(gctx *gin.Context, w repository.Word) {
 	var otherRootWords []repository.Word
@@ -162,4 +164,13 @@ func (h *Handler) renderEntry(gctx *gin.Context, w repository.Word) {
 	}
 
 	return
+}
+
+//go:generate corgi translation_search.corgi
+
+func (h *Handler) renderTranslationSearchResult(gctx *gin.Context, ts []repository.TranslatedWord) {
+	if err := RenderTranslationSearch(gctx.Writer, gctx.Query("q"), ts); err != nil {
+		gctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
 }

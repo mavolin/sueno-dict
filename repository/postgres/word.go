@@ -71,7 +71,7 @@ func (r *Repository) WordRoot(ctx context.Context, root string) (*repository.Wor
 			return db.Order("index")
 		}).
 		Preload("CompoundWords.Word").
-		Order("(select type from definitions where definitions.word_id = words.id limit 1)").
+		Order("(select type from definitions where definitions.word_id = words.id order by definitions.id limit 1)").
 		Order("word").
 		Find(&wws)
 	if res.Error != nil {
@@ -155,36 +155,72 @@ func (r *Repository) SearchWord(ctx context.Context, query string) (*repository.
 	return &w, errors.Wrap(res.Error, "postgres: Word")
 }
 
-func (r *Repository) SearchTranslation(ctx context.Context, query string) ([]repository.Word, error) {
-	var wws []word
+func (r *Repository) SearchTranslation(ctx context.Context, query string) ([]repository.TranslatedWord, error) {
+	var tws []repository.TranslatedWord
 
-	res := r.DB.
+	err := r.DB.
 		WithContext(ctx).
-		Where("id in (?)", r.DB.
-			Select("word_id").
-			Where("translation like ?", "%"+query+"%").
-			Model(&repository.Definition{}),
-		).
-		Preload("Definitions").
-		Preload("CompoundWords", func(db *gorm.DB) *gorm.DB {
-			return db.Order("index")
-		}).
-		Preload("CompoundWords.Word").
-		First(&wws)
-	if res.Error != nil {
-		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
+		Transaction(func(tx *gorm.DB) error {
+			var ds []repository.Definition
 
-		return nil, errors.Wrap(res.Error, "postgres: Word")
-	}
+			res := tx.
+				Where("translation like ?", "%"+query+"%").
+				Order("(select type from definitions as ds " +
+					"where ds.word_id = definitions.word_id " +
+					"order by ds.id limit 1)").
+				Order("(select word from words where words.id = definitions.id)").
+				Limit(75).
+				Find(&ds)
+			if res.Error != nil {
+				return errors.Wrap(res.Error, "could not load matching definitions")
+			}
 
-	ws := make([]repository.Word, len(wws))
-	for i, ww := range wws {
-		ws[i] = ww.toRepoType()
-	}
+			ids := make([]repository.WordID, len(ds))
+			for i, d := range ds {
+				ids[i] = d.WordID
+			}
 
-	return ws, errors.Wrap(res.Error, "postgres: Word")
+			var wws []word
+
+			res = r.DB.
+				WithContext(ctx).
+				Where("words.id in (?)", ids).
+				Preload("Definitions").
+				Preload("CompoundWords", func(db *gorm.DB) *gorm.DB {
+					return db.Order("index")
+				}).
+				Preload("CompoundWords.Word").
+				Order("(select type from definitions where definitions.word_id = words.id order by definitions.id limit 1)").
+				Order("word").
+				Find(&wws)
+			if res.Error != nil {
+				return errors.Wrap(res.Error, "could not load matching words")
+			}
+
+			tws = make([]repository.TranslatedWord, len(ds))
+
+			var defIndex int
+
+			for _, ww := range wws {
+				for defIndex < len(ds) {
+					def := ds[defIndex]
+					if def.WordID != ww.ID {
+						break
+					}
+
+					tws[defIndex] = repository.TranslatedWord{
+						Word:              ww.toRepoType(),
+						MatchedDefinition: def,
+					}
+
+					defIndex++
+				}
+			}
+
+			return nil
+		})
+
+	return tws, errors.WithMessage(err, "postgres: SearchTranslation")
 }
 
 func (r *Repository) migrate() error {
