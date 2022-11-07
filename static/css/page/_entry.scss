@@ -1,0 +1,161 @@
+@use "abstract/colors";
+@use "abstract/fonts";
+
+.l-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 2.8rem;
+  width: 100%;
+}
+
+.c-entry {
+  &:empty {
+    display: none;
+  }
+
+  &__header {
+    margin-bottom: 2rem;
+  }
+
+  &__title {
+    display: inline-block;
+    margin-right: 1.6rem;
+
+    @include fonts.roboto-slab;
+    font-size: 4.8rem;
+    font-weight: 700;
+  }
+
+  &__type {
+    display: inline-block;
+
+    @include fonts.roboto-slab;
+    font-size: 2.4rem;
+    font-weight: 500;
+    color: colors.$indigo11;
+  }
+}
+
+.c-entry-section {
+  &:not(:last-child) {
+    margin-bottom: 2.4rem;
+  }
+
+  &__title {
+    @include fonts.roboto-slab;
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: colors.$indigo13;
+
+    margin-bottom: 1.6rem;
+  }
+
+  &__body {
+    font-size: 1.9rem;
+    font-weight: 500;
+  }
+}
+
+.c-entry-fields-table {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.c-entry-field {
+  &__label {
+    padding-right: .8rem;
+    font-weight: 700;
+  }
+}
+
+.c-definitions {
+}
+
+.c-definition {
+  margin-left: 2rem;
+  padding-left: .8rem;
+
+  &::marker {
+    font-weight: 600;
+  }
+
+  &__translation {
+    font-weight: 700;
+  }
+
+  &__definition {
+  }
+
+  &__example-line {
+    display: block;
+    margin-top: .3rem;
+  }
+
+  &__example {
+    font-weight: 700;
+    color: colors.$indigo10;
+  }
+
+  &__example-translation {
+    color: colors.$indigo10;
+  }
+}
+
+.l-conjugation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(24.5rem, 1fr));
+  gap: 1.6rem;
+}
+
+.c-conjugation-group {
+  &__title {
+    @include fonts.roboto-slab;
+    font-size: 2.4rem;
+    font-weight: 600;
+    color: colors.$indigo10;
+
+    margin-bottom: .6rem;
+  }
+
+  &__table {
+  }
+}
+
+.c-conjugation-table {
+  display: flex;
+    flex-direction: column;
+  gap: .3rem;
+
+  &__tense {
+    font-weight: 700;
+  }
+
+  &__conjugation {
+    padding-left: .8rem;
+  }
+}
+
+.c-related-word {
+  margin-left: 2rem;
+  padding-left: .8rem;
+
+  &::marker {
+    font-weight: 600;
+  }
+
+  &__link {
+    @include fonts.roboto-slab;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+  }
+
+  &__type {
+    @include fonts.roboto-slab;
+    font-weight: 600;
+    color: colors.$indigo11;
+  }
+}

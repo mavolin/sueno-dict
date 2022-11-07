@@ -1,0 +1,39 @@
+@use "abstract/functions";
+
+.\@no-print {
+  @media print {
+    display: none;
+  }
+}
+
+$breakpoint: 300px;
+
+@while $breakpoint <= 1600px {
+  $em: #{functions.strip-unit($breakpoint) / 16}em;
+
+  .\@\>#{functions.strip-unit($breakpoint)} {
+    @media (max-width: #{$em}) {
+      display: none;
+    }
+  }
+
+  .\@\<#{functions.strip-unit($breakpoint)} {
+    @media (min-width: #{$em}) {
+      display: none;
+    }
+  }
+
+  $breakpoint: $breakpoint + 50px;
+}
+
+@mixin \>($px) {
+  @media (min-width: #{functions.strip-unit($px) / 16}em) {
+    @content;
+  }
+}
+
+@mixin \<($px) {
+  @media (max-width: #{functions.strip-unit($px) / 16}em) {
+    @content;
+  }
+}

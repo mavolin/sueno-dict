@@ -20,6 +20,9 @@ type Options struct {
 
 func Setup(o Options) (*gin.Engine, error) {
 	r := gin.New()
+	if err := r.SetTrustedProxies(nil); err != nil {
+		return nil, err
+	}
 
 	setupStatic(r)
 

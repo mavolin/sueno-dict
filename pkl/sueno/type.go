@@ -14,7 +14,8 @@ const (
 	Interjection
 	Pronoun
 	Article
-	Numeral
+	Cardinal
+	Ordinal
 	Abbreviation
 	Other
 )
@@ -37,8 +38,10 @@ func Type(word string) WordType {
 		return Pronoun
 	case IsArticle(word):
 		return Article
-	case IsNumeral(word):
-		return Numeral
+	case IsCardinal(word):
+		return Cardinal
+	case IsOrdinal(word):
+		return Ordinal
 	case IsAdjective(word):
 		return Adjective
 	case IsAdverb(word):

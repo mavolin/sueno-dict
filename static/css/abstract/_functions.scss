@@ -1,0 +1,13 @@
+/// Remove the unit of a length
+/// @param {Number} $number - Number to remove unit from
+/// @return {Number} - Unitless number
+/// @example scss - Usage
+///     strip-unit(10px) -> 10
+///     strip-unit(2em) -> 2
+///     strip-unit(3) -> 3
+@function strip-unit($number) {
+  @if type-of($number) == 'number' and not unitless($number) {
+    @return $number / ($number * 0 + 1);
+  }
+  @return $number;
+}

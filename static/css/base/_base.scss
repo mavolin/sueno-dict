@@ -1,0 +1,17 @@
+@use "base/responsive";
+
+:root {
+  font-size: 62.5%;
+
+  @include responsive.\<(500) {
+    font-size: 56.25%;
+  }
+}
+
+body {
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}

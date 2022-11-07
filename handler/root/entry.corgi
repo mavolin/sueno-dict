@@ -1,0 +1,204 @@
+extend "base"
+
+func RenderEntry(word repository.Word, otherRootWords []repository.Word)
+
+block title
+  | #{word.Word}#![&mdash;]Definition
+
+block body
+  .l-container
+    .l-page-header
+      a.c-home-link(href="/") The Sueno Dictionary
+
+      form.c-page-search(action="/", method="get")
+        input.c-page-search__input(type="text", name="q", required, aria-label="word", placeholder="skribi")
+        button.c-page-search__button(type="submit", value="Search")
+          svg.c-page-search__button-icon(fill="none", stroke="currentColor", viewBox="0 0 24 24", xmlns="http://www.w3.org/2000/svg")
+            path(stroke-linecap="round", stroke-linejoin="round", stroke-width="2", d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z")
+
+    .c-entry-section
+      .l-entries
+        - var i int
+        - var prevType sueno.WordType
+
+        while i < len(word.Definitions)
+          .c-entry
+            - firstDefinition := word.Definitions[i]
+            .c-entry__header
+              .c-entry__title= word.Word
+              .c-entry__type
+                switch firstDefinition.Type
+                  case sueno.Noun
+                    | noun
+                  case sueno.Verb
+                    | verb
+                  case sueno.Adjective
+                    | adjective
+                  case sueno.Adverb
+                    | adverb
+                  case sueno.Preposition
+                    | preposition
+                  case sueno.Conjunction
+                    | conjunction
+                  case sueno.Interjection
+                    | interjection
+                  case sueno.Pronoun
+                    | pronoun
+                  case sueno.Article
+                    | article
+                  case sueno.Cardinal
+                    | number
+                  case sueno.Abbreviation
+                    | abbreviation
+                  case sueno.Other
+                    | other
+
+              if len(word.CompoundWords) > 0
+                .c-entry__compound-words
+                  for i, cw range word.CompoundWords
+                    .c-entry__compound-word
+                      a(href="/entry/#{cw.Word}")= cw.Word
+
+                    if i > 0
+                      | #[ + ]
+
+            .c-entry-section
+              switch firstDefinition.Type
+                case sueno.Noun
+                  .c-entry-section__body
+                    table.c-entry-fields-table
+                      tr.c-entry-field
+                        td.c-entry-field__label Plural:
+                        td.c-entry-field__value= sueno.ToPluralNoun(word.Word)
+                case sueno.Cardinal
+                  .c-entry-section__body
+                    table.c-entry-fields-table
+                      tr.c-entry-field
+                        td.c-entry-field__label Ordinal:
+                        td.c-entry-field__value= sueno.ToOrdinal(word.Word)
+
+
+            .c-entry-section
+              .c-entry-section__title Definition of #em{word.Word}
+
+              .c-entry-section__body
+                ol.c-defintions
+                  while i < len(word.Definitions)
+                    - def := word.Definitions[i]
+                    if i > 0 && prevType != def.Type
+                      - break
+
+                    li.c-definition
+                      div
+                        span.c-definition__translation #{def.Translation}
+                        if def.Definition != ""
+                          span.c-definition__definition #![&mdash;]#{def.Definition}
+                      if def.Example != ""
+                        .c-definition__example-line
+                          span.c-definition__example #{def.Example}
+                          span.c-definition__example-translation #![&mdash;]#{def.ExampleTranslation}
+
+
+                    - i++
+
+            if firstDefinition.Type == sueno.Verb
+              .c-entry-section
+                .c-entry-section__title Conjugation of #em{word.Word}
+
+                .c-entry-section__body
+                  .l-conjugation-grid
+                    .c-conjugation-group
+                      .c-conjugation-group__title Indicative
+                      table.c-conjugation-table.c-conjucation-group__table
+                        tr
+                          td.c-conjugation-table__tense Past:
+                          td.c-conjugation-table__conjugation= sueno.ToPast(word.Word)
+                        tr
+                          td.c-conjugation-table__tense Present:
+                          td.c-conjugation-table__conjugation= sueno.ToPresent(word.Word)
+                        tr
+                          td.c-conjugation-table__tense Future:
+                          td.c-conjugation-table__conjugation= sueno.ToFuture(word.Word)
+
+                    .c-conjugation-group
+                      .c-conjugation-group__title Subjunctive
+                      table.c-conjugation-table.c-conjucation-group__table
+                        tr
+                          td.c-conjugation-table__tense Past:
+                          td.c-conjugation-table__conjugation= sueno.ToPastSubjunctive(word.Word)
+                        tr
+                          td.c-conjugation-table__tense Present:
+                          td.c-conjugation-table__conjugation= sueno.ToPresentSubjunctive(word.Word)
+                        tr
+                          td.c-conjugation-table__tense Future:
+                          td.c-conjugation-table__conjugation= sueno.ToFutureSubjunctive(word.Word)
+
+                    .c-conjugation-group
+                      .c-conjugation-group__title Conditional
+                      table.c-conjugation-table.c-conjucation-group__table
+                        tr
+                          td.c-conjugation-table__tense Past:
+                          td.c-conjugation-table__conjugation= sueno.ToPastConditional(word.Word)
+                        tr
+                          td.c-conjugation-table__tense Present:
+                          td.c-conjugation-table__conjugation= sueno.ToPresentConditional(word.Word)
+                        tr
+                          td.c-conjugation-table__tense Future:
+                          td.c-conjugation-table__conjugation= sueno.ToFutureConditional(word.Word)
+
+                    .c-conjugation-group
+                      .c-conjugation-group__title Participles
+                      table.c-conjugation-table.c-conjucation-group__table
+                        tr
+                          td.c-conjugation-table__tense Past:
+                          td.c-conjugation-table__conjugation= sueno.ToPastParticiple(word.Word)
+                        tr
+                          td.c-conjugation-table__tense Present:
+                          td.c-conjugation-table__conjugation= sueno.ToPresentParticiple(word.Word)
+                        tr
+                          td.c-conjugation-table__tense Future:
+                          td.c-conjugation-table__conjugation= sueno.ToFutureParticiple(word.Word)
+
+                    .c-conjugation-group
+                      .c-conjugation-group__title Imperative
+                      table.c-conjugation-table.c-conjucation-group__table
+                        td.c-conjugation-table__tense Present:
+                        td.c-conjugation-table__conjugation= sueno.ToImperative(word.Word)
+
+    if len(otherRootWords) > 0
+      .c-entry-section
+        .c-entry-section__title Words with the same root #em{word.Root}
+        .c-entry-section__body
+          ol.c-related-words
+            for _, w range otherRootWords
+              li.c-related-word
+                a.c-related-word__link(href=fmt.Sprintf("/?q=%s&type=word", url.QueryEscape(w.Word)))= w.Word
+                span.c-related-word__type
+                  |  (
+                  switch w.Definitions[0].Type
+                    case sueno.Noun
+                      | noun
+                    case sueno.Verb
+                      | verb
+                    case sueno.Adjective
+                      | adjective
+                    case sueno.Adverb
+                      | adverb
+                    case sueno.Preposition
+                      | preposition
+                    case sueno.Conjunction
+                      | conjunction
+                    case sueno.Interjection
+                      | interjection
+                    case sueno.Pronoun
+                      | pronoun
+                    case sueno.Article
+                      | article
+                    case sueno.Cardinal
+                      | number
+                    case sueno.Abbreviation
+                      | abbreviation
+                    case sueno.Other
+                      | other
+                  | )
+                span.c-related-word__translation #![&mdash;]#{w.Definitions[0].Translation}

@@ -1,6 +1,8 @@
 package root
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/mavolin/sueno-dict/repository"
@@ -15,8 +17,10 @@ func NewHandler(repo repository.Repository) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(r *gin.RouterGroup) {
-
+	r.GET("", h.Root)
 }
+
+//go:generate corgi main.corgi
 
 func (h *Handler) Root(gctx *gin.Context) {
 	value := gctx.Query("q")
@@ -25,5 +29,8 @@ func (h *Handler) Root(gctx *gin.Context) {
 		return
 	}
 
-	// todo: render main
+	if err := RenderMain(gctx.Writer); err != nil {
+		gctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
 }

@@ -15,6 +15,7 @@ type Repository interface {
 	CreateWord(context.Context, Word) (WordID, error)
 	Word(context.Context, WordID) (*Word, error)
 	SearchWord(context.Context, string) (*Word, error)
+	SearchTranslation(context.Context, string) ([]Word, error)
 }
 
 // ============================================================================
@@ -46,8 +47,8 @@ type Word struct {
 	Word string
 	Root string
 
-	Definitions   []Definition
-	CompoundWords []Word
+	Definitions   []Definition `gorm:"foreignkey:WordID"`
+	CompoundWords []Word       `gorm:"-"`
 }
 
 // ============================================================================
@@ -70,6 +71,7 @@ type Definition struct {
 	WordID WordID
 	Type   sueno.WordType
 
+	Definition  string
 	Translation string
 
 	Example            string

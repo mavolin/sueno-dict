@@ -1,0 +1,42 @@
+@use "abstract/colors";
+@use "abstract/fonts";
+
+body {
+  @include fonts.open-sans;
+
+  font-weight: 400;
+  color: colors.$grey9;
+  font-size: 1.6rem;
+}
+
+*, *::before, *::after {
+  font: inherit;
+}
+
+.t2 {
+  font-size: 3.2rem;
+  
+  @media print {
+    font-size: 3.6rem;
+  }
+}
+
+.t3 {
+  font-size: 2.4rem;
+}
+
+.t4 {
+  font-size: 2rem;
+}
+
+.heading-tertiary {
+  @extend .t3;
+  font-weight: 700;
+  display: block;
+}
+
+.heading-quaternary {
+  @extend .t4;
+  font-weight: 700;
+  display: block;
+}

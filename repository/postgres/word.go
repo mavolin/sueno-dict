@@ -19,7 +19,7 @@ type (
 	compoundWord struct {
 		CompoundWordID repository.WordID `gorm:"primary_key"`
 		WordID         repository.WordID `gorm:"primary_key"`
-		Word           word
+		Word           word              `gorm:"foreignKey:WordID"`
 
 		Index int
 	}
@@ -61,26 +61,33 @@ func wordFromRepoType(w repository.Word) *word {
 }
 
 func (r *Repository) WordRoot(ctx context.Context, root string) (*repository.WordRoot, error) {
-	var ws []repository.Word
+	var wws []word
 
 	res := r.DB.
 		WithContext(ctx).
 		Where(&repository.Word{Root: root}).
-		Order("type").
+		Preload("Definitions").
+		Preload("CompoundWords", func(db *gorm.DB) *gorm.DB {
+			return db.Order("index")
+		}).
+		Preload("CompoundWords.Word").
+		Order("(select type from definitions where definitions.word_id = words.id limit 1)").
 		Order("word").
-		Find(&ws)
+		Find(&wws)
 	if res.Error != nil {
 		return nil, errors.Wrap(res.Error, "postgres: WordRoot")
 	}
 
-	if len(ws) == 0 {
+	if len(wws) == 0 {
 		return nil, nil
 	}
 
-	return &repository.WordRoot{
-		Root:  root,
-		Words: ws,
-	}, nil
+	ws := make([]repository.Word, len(wws))
+	for i, ww := range wws {
+		ws[i] = ww.toRepoType()
+	}
+
+	return &repository.WordRoot{Root: root, Words: ws}, nil
 }
 
 func (r *Repository) CreateWord(ctx context.Context, w repository.Word) (repository.WordID, error) {
@@ -128,7 +135,9 @@ func (r *Repository) SearchWord(ctx context.Context, query string) (*repository.
 	res := r.DB.
 		WithContext(ctx).
 		Where(&repository.Word{Word: query}).
-		Preload("Definitions").
+		Preload("Definitions", func(db *gorm.DB) *gorm.DB {
+			return db.Order("id")
+		}).
 		Preload("CompoundWords", func(db *gorm.DB) *gorm.DB {
 			return db.Order("index")
 		}).
@@ -144,6 +153,38 @@ func (r *Repository) SearchWord(ctx context.Context, query string) (*repository.
 
 	w := ww.toRepoType()
 	return &w, errors.Wrap(res.Error, "postgres: Word")
+}
+
+func (r *Repository) SearchTranslation(ctx context.Context, query string) ([]repository.Word, error) {
+	var wws []word
+
+	res := r.DB.
+		WithContext(ctx).
+		Where("id in (?)", r.DB.
+			Select("word_id").
+			Where("translation like ?", "%"+query+"%").
+			Model(&repository.Definition{}),
+		).
+		Preload("Definitions").
+		Preload("CompoundWords", func(db *gorm.DB) *gorm.DB {
+			return db.Order("index")
+		}).
+		Preload("CompoundWords.Word").
+		First(&wws)
+	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+
+		return nil, errors.Wrap(res.Error, "postgres: Word")
+	}
+
+	ws := make([]repository.Word, len(wws))
+	for i, ww := range wws {
+		ws[i] = ww.toRepoType()
+	}
+
+	return ws, errors.Wrap(res.Error, "postgres: Word")
 }
 
 func (r *Repository) migrate() error {

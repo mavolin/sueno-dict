@@ -1,0 +1,23 @@
+@mixin is-closed {
+  &.is-closed {
+    @content;
+  }
+}
+
+@mixin is-open {
+  &.is-open {
+    @content;
+  }
+}
+
+@mixin is-active {
+    &.is-active {
+        @content;
+    }
+}
+
+@mixin is-invalid {
+  &.is-invalid {
+    @content;
+  }
+}

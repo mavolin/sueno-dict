@@ -1,0 +1,16 @@
+extend "base"
+
+func RenderMain()
+
+block title
+  | Sueno Dictionary
+
+block body
+  .l-main
+    h1.l-main__title The Sueno Dictionary
+    .l-main__search
+      form.c-main-search(action="/", method="get")
+        input.c-main-search__input(type="text", name="q", required, aria-label="word", placeholder="skribi")
+        button.c-main-search__button(type="submit", value="Search")
+          svg.c-main-search__button-icon(fill="none", stroke="currentColor", viewBox="0 0 24 24", xmlns="http://www.w3.org/2000/svg")
+            path(stroke-linecap="round", stroke-linejoin="round", stroke-width="2", d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z")
