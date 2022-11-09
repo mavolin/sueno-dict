@@ -69,11 +69,11 @@ func IsOrdinal(word string) bool {
 //
 // word must be a valid cardinal or fraction.
 func ToOrdinal(word string) string {
-	if IsCardinal(word) {
-		return word + "i"
+	if IsOrdinal(word) {
+		return word[:len(word)-1] + "i"
 	}
 
-	return word[:len(word)-1] + "i"
+	return word + "i"
 }
 
 // IsFraction reports whether the given word represents a fraction.
@@ -108,9 +108,9 @@ func IsFraction(word string) bool {
 //
 // word must be a valid cardinal or ordinal.
 func ToFraction(word string) string {
-	if IsCardinal(word) {
-		return word + "u"
+	if IsOrdinal(word) {
+		return word[:len(word)-1] + "u"
 	}
 
-	return word[:len(word)-1] + "u"
+	return word + "u"
 }
