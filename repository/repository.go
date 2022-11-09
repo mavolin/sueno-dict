@@ -47,7 +47,14 @@ type (
 	Word struct {
 		ID   WordID `gorm:"primaryKey;autoIncrement;not null"`
 		Word string `gorm:"not null"`
-		Root string `gorm:"not null"`
+		Root string `gorm:"not null;default:''"`
+
+		// CustomPlural allows overriding the plural form of the word.
+		//
+		// If this is empty, the plural form is grammatically derived from the word.
+		//
+		// Used for words such as 'ja' (plural: 'jaos').
+		CustomPlural string `gorm:"not null;default:''"`
 
 		Definitions   []Definition `gorm:"foreignKey:WordID;references:ID;constraint:OnDelete:cascade"`
 		CompoundWords []Word       `gorm:"-"`
@@ -81,9 +88,9 @@ type Definition struct {
 
 	// all the below except translation are optional, denoted by an empty value
 
-	Definition  string `gorm:"not null"`
+	Definition  string `gorm:"not null;default:''"`
 	Translation string `gorm:"not null"`
 
-	Example            string `gorm:"not null"`
-	ExampleTranslation string `gorm:"not null"`
+	Example            string `gorm:"not null;default:''"`
+	ExampleTranslation string `gorm:"not null;default:''"`
 }

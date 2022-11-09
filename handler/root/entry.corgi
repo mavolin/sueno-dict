@@ -73,7 +73,11 @@ block body
                     table.c-entry-fields-table
                       tr.c-entry-field
                         td.c-entry-field__label Plural:
-                        td.c-entry-field__value= sueno.ToPluralNoun(word.Word)
+                        td.c-entry-field__value
+                          if word.CustomPlural != ""
+                            = word.CustomPlural
+                          else
+                            = sueno.ToPluralNoun(word.Word)
               case sueno.Adjective
                 .c-entry-section
                   .c-entry-section__body
