@@ -59,7 +59,7 @@ block body
                 .c-entry__compound-words
                   for i, cw range word.CompoundWords
                     .c-entry__compound-word
-                      a(href="/entry/#{cw.Word}")= cw.Word
+                      a(href="/?q="+url.QueryEscape(cw.Word)+"&type=word")= cw.Word
 
                     if i > 0
                       | #[ + ]

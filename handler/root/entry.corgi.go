@@ -259,8 +259,17 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 						return err
 					}
 					for i, cw := range word.CompoundWords {
+						_closed = false
+						err = _writeutil.Write(_w, "<div class=\"c-entry__compound-word\"><a")
+						if err != nil {
+							return err
+						}
+						err = _writeutil.WriteAttr(_w, "href", "/?q="+url.QueryEscape(cw.Word)+"&type=word", false)
+						if err != nil {
+							return err
+						}
 						_closed = true
-						err = _writeutil.Write(_w, "<div class=\"c-entry__compound-word\"><a href=\"/entry/#{cw.Word}\">")
+						err = _writeutil.Write(_w, ">")
 						if err != nil {
 							return err
 						}

@@ -3,11 +3,15 @@
 package postgres
 
 import (
+	"log"
+	"os"
 	"strings"
+	"time"
 
 	"github.com/pkg/errors"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	"github.com/mavolin/sueno-dict/repository"
 )
@@ -59,6 +63,13 @@ func Open(o Options) (*Repository, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "postgres: could not open database")
 	}
+
+	db.Logger = logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Config{
+		SlowThreshold:             200 * time.Millisecond,
+		LogLevel:                  logger.Info,
+		IgnoreRecordNotFoundError: false,
+		Colorful:                  true,
+	})
 
 	repo := &Repository{DB: db}
 

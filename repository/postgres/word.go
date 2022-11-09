@@ -17,11 +17,14 @@ type (
 	}
 
 	compoundWord struct {
-		CompoundWordID repository.WordID `gorm:"primary_key"`
-		WordID         repository.WordID `gorm:"primary_key"`
-		Word           word              `gorm:"foreignKey:WordID"`
+		// CompoundWordID is the [repository.WordID] of the compound word.
+		CompoundWordID repository.WordID `gorm:"not null"`
+		CompoundWord   word
+		// WordID is the [repository.WordID] of the word the [CompoundWordID]
+		// is part of.
+		WordID repository.WordID `gorm:"primaryKey;not null"`
 
-		Index int
+		Index int `gorm:"primaryKey;not null"`
 	}
 )
 
@@ -34,7 +37,7 @@ func (ww *word) toRepoType() repository.Word {
 	w.CompoundWords = make([]repository.Word, len(ww.CompoundWords))
 
 	for i, cw := range ww.CompoundWords {
-		w.CompoundWords[i] = cw.Word.toRepoType()
+		w.CompoundWords[i] = cw.CompoundWord.toRepoType()
 	}
 
 	return w
@@ -70,7 +73,7 @@ func (r *Repository) WordRoot(ctx context.Context, root string) (*repository.Wor
 		Preload("CompoundWords", func(db *gorm.DB) *gorm.DB {
 			return db.Order("index")
 		}).
-		Preload("CompoundWords.Word").
+		Preload("CompoundWords.CompoundWord").
 		Order("(select type from definitions where definitions.word_id = words.id order by definitions.id limit 1)").
 		Order("word").
 		Find(&wws)
@@ -115,7 +118,7 @@ func (r *Repository) Word(ctx context.Context, id repository.WordID) (*repositor
 		Preload("CompoundWords", func(db *gorm.DB) *gorm.DB {
 			return db.Order("index")
 		}).
-		Preload("CompoundWords.Word").
+		Preload("CompoundWords.CompoundWord").
 		First(&ww)
 	if res.Error != nil {
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
@@ -141,7 +144,7 @@ func (r *Repository) SearchWord(ctx context.Context, query string) (*repository.
 		Preload("CompoundWords", func(db *gorm.DB) *gorm.DB {
 			return db.Order("index")
 		}).
-		Preload("CompoundWords.Word").
+		Preload("CompoundWords.CompoundWord").
 		First(&ww)
 	if res.Error != nil {
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
@@ -235,6 +238,6 @@ func (r *Repository) DeleteWord(ctx context.Context, id repository.WordID) error
 }
 
 func (r *Repository) migrate() error {
-	err := r.DB.AutoMigrate(&word{}, &repository.Definition{}, compoundWord{})
+	err := r.DB.AutoMigrate(&repository.Word{}, &repository.Definition{}, &word{}, &compoundWord{})
 	return errors.Wrap(err, "postgres: could not migrate database")
 }

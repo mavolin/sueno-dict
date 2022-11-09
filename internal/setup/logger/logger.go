@@ -7,7 +7,8 @@ import (
 )
 
 func Setup() (*zap.SugaredLogger, error) {
-	log, err := zap.NewDevelopment(zap.AddStacktrace(zapcore.WarnLevel), zap.AddCaller())
+	log, err := zap.NewDevelopment(
+		zap.AddStacktrace(zapcore.WarnLevel), zap.AddCaller())
 	if err != nil {
 		return nil, errors.Wrap(err, "setup: RegularLogger")
 	}

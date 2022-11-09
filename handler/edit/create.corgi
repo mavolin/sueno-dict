@@ -1,0 +1,189 @@
+extend "base"
+
+func RenderCreate()
+
+block title
+  | Create a new word
+
+block body
+  .l-container
+    form(method="post", action="/create")
+      .c-entry-section
+        h2.c-entry-section__title Base Information
+        .c-entry-section__body
+          table.c-entry-fields-table
+            tr.c-entry-field
+              td.c-entry-field__label
+                label(for="word") Word:
+              td
+                input(type="text", name="word", id="word")
+            tr.c-entry-field
+              td.c-entry-field__label
+                label(for="root") Root:
+              td
+                input(type="text", name="root", id="root")
+
+      .c-entry-section
+        h2.c-entry-section__title Compound Word Information
+        .c-entry-section__body
+          .js-compound-words
+          button.js-add-compound-word-btn(type="button", style="margin-top: 10px") Add Compound Word
+          button.js-delete-last-compound-word-btn(type="button") Delete Last Compound Word
+          script.
+            document.querySelector('.js-add-compound-word-btn').addEventListener('click', (ev) => {
+                ev.preventDefault()
+                const sectionEl = document.querySelector('.js-compound-words')
+
+                const tableEl = document.createElement('table')
+                tableEl.classList.add('c-entry-fields-table')
+
+                tableEl.innerHTML = `
+                        <tr class="c-entry-field">
+                            <td class="c-entry-field__label">
+                                <label for="compound_word">Word:</label>
+                            </td>
+                            <td>
+                                <input type="text" name="compound_words[]" id="compound_word" required>
+                            </td>
+                        </tr>
+                    `
+
+                sectionEl.appendChild(tableEl)
+            })
+
+            document.querySelector('.js-delete-last-compound-word-btn').addEventListener('click', (ev) => {
+                ev.preventDefault()
+                const sectionEl = document.querySelector('.js-compound-words')
+                if (sectionEl.lastChild) {
+                    sectionEl.removeChild(sectionEl.lastChild)
+                }
+            })
+
+      .c-entry-section
+        h2.c-entry-section__title Definitions
+        .c-entry-section__body
+          .js-definitions
+            //- Ik that id will be used twice when an additional definition is
+            //- added, but I don't think aria compliance is a big deal here, since
+            //- I, a seeing person, am the only one who will be using this.
+            table.c-entry-fields-table
+              tr.c-entry-field
+                td.c-entry-field__label
+                  label(for="type") Type:
+                td
+                  select(name="definitions[].type", id="type", required)
+                    option(value="1") Noun
+                    option(value="2") Verb
+                    option(value="4") Adjective
+                    option(value="5") Adverb
+                    option(value="6") Preposition
+                    option(value="7") Conjunction
+                    option(value="8") Interjection
+                    option(value="9") Pronoun
+                    option(value="10") Article
+                    option(value="11") Cardinal
+                    option(value="13") Abbreviation
+                    option(value="14") Other
+
+              tr.c-entry-field
+                td.c-entry-field__label
+                  label(for="translation") Translation:
+                td
+                  input(type="text", name="definitions[].translation", id="translation", required)
+              tr.c-entry-field
+                td.c-entry-field__label
+                  label(for="definition") Definition:
+                td
+                  input(type="text", name="definitions[].definition", id="definition")
+              tr.c-entry-field
+                td.c-entry-field__label
+                  label(for="example") Example:
+                td
+                  input(type="text", name="definitions[].example", id="example")
+              tr.c-entry-field
+                td.c-entry-field__label
+                  label(for="example_translation") Example Translation:
+                td
+                  input(type="text", name="definitions[].example_translation", id="example_translation")
+
+          button.js-add-definition-btn(type="button", style="margin-top: 10px") Add Definition
+          button.js-delete-last-definition-btn(type="button") Delete Last Definition
+          script.
+              document.querySelector('.js-add-definition-btn').addEventListener('click', (ev) => {
+                  ev.preventDefault()
+                  const sectionEl = document.querySelector('.js-definitions')
+
+                  const tableEl = document.createElement('table')
+                  tableEl.classList.add('c-entry-fields-table')
+                  tableEl.style.marginTop = '5px'
+
+                  tableEl.innerHTML = `
+                          <tr class="c-entry-field">
+                              <td class="c-entry-field__label">
+                                  <label for="type">Type:</label>
+                              </td>
+                              <td>
+                                  <select name="definitions[].type" id="type" required>
+                                      <option value="1">Noun</option>
+                                      <option value="2">Verb</option>
+                                      <option value="4">Adjective</option>
+                                      <option value="5">Adverb</option>
+                                      <option value="6">Preposition</option>
+                                      <option value="7">Conjunction</option>
+                                      <option value="8">Interjection</option>
+                                      <option value="9">Pronoun</option>
+                                      <option value="10">Article</option>
+                                      <option value="11">Cardinal</option>
+                                      <option value="13">Abbreviation</option>
+                                      <option value="14">Other</option>
+                                  </select>
+                              </td>
+                          </tr>
+                          <tr class="c-entry-field">
+                              <td class="c-entry-field__label">
+                                  <label for="translation">Translation:</label>
+                              </td>
+                              <td>
+                                  <input type="text" name="definitions[].translation" id="translation" required>
+                              </td>
+                          </tr>
+                          <tr class="c-entry-field">
+                              <td class="c-entry-field__label">
+                                  <label for="definition">Definition:</label>
+                              </td>
+                              <td>
+                                  <input type="text" name="definitions[].definition" id="definition">
+                              </td>
+                          </tr>
+                          <tr class="c-entry-field">
+                              <td class="c-entry-field__label">
+                                  <label for="example">Example:</label>
+                              </td>
+                              <td>
+                                  <input type="text" name="definitions[].example" id="example">
+                              </td>
+                          </tr>
+                          <tr class="c-entry-field">
+                              <td class="c-entry-field__label">
+                                  <label for="example_translation">Example Translation:</label>
+                              </td>
+                              <td>
+                                  <input type="text" name="definitions[].example_translation" id="example_translation">
+                              </td>
+                          </tr>
+                      `
+
+                  sectionEl.appendChild(tableEl)
+              })
+
+              document.querySelector('.js-delete-last-definition-btn').addEventListener('click', (ev) => {
+                  ev.preventDefault()
+                  const sectionEl = document.querySelector('.js-definitions')
+                  if (sectionEl.lastChild) {
+                      sectionEl.removeChild(sectionEl.lastChild)
+                  }
+              })
+
+      .c-entry-section
+        .c-entry-section__body
+          button(type="submit") Create

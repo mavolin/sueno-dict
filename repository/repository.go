@@ -45,11 +45,11 @@ func ParseWordID(s string) (WordID, error) {
 
 type (
 	Word struct {
-		ID   WordID `gorm:"primary_key"`
-		Word string
-		Root string
+		ID   WordID `gorm:"primaryKey;autoIncrement;not null"`
+		Word string `gorm:"not null"`
+		Root string `gorm:"not null"`
 
-		Definitions   []Definition `gorm:"foreignKey:WordID;constraint:OnDelete:update"`
+		Definitions   []Definition `gorm:"foreignKey:WordID;references:ID;constraint:OnDelete:cascade"`
 		CompoundWords []Word       `gorm:"-"`
 	}
 
@@ -75,13 +75,15 @@ func ParseDefinitionID(s string) (DefinitionID, error) {
 }
 
 type Definition struct {
-	ID     DefinitionID `gorm:"primary_key"`
-	WordID WordID
-	Type   sueno.WordType
+	ID     DefinitionID   `gorm:"primaryKey;autoIncrement;not null"`
+	WordID WordID         `gorm:"not null"`
+	Type   sueno.WordType `gorm:"not null"`
 
-	Definition  string
-	Translation string
+	// all the below except translation are optional, denoted by an empty value
 
-	Example            string
-	ExampleTranslation string
+	Definition  string `gorm:"not null"`
+	Translation string `gorm:"not null"`
+
+	Example            string `gorm:"not null"`
+	ExampleTranslation string `gorm:"not null"`
 }
