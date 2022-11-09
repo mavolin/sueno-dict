@@ -1,13 +1,11 @@
 package sueno
 
-import "strings"
-
 func IsParticiple(word string) bool {
 	return IsPastParticiple(word) || IsPresentParticiple(word) || IsFutureParticiple(word)
 }
 
 func IsPastParticiple(word string) bool {
-	return strings.HasSuffix(word, "ata")
+	return hasGrammaticalSuffix(word, "ata")
 }
 
 // ToPastParticiple returns the past participle form of the given word.
@@ -29,7 +27,7 @@ func ToPastParticiple(word string) string {
 }
 
 func IsPresentParticiple(word string) bool {
-	return strings.HasSuffix(word, "ate")
+	return hasGrammaticalSuffix(word, "ate")
 }
 
 // ToPresentParticiple returns the present participle form of the given word.
@@ -51,7 +49,7 @@ func ToPresentParticiple(word string) string {
 }
 
 func IsFutureParticiple(word string) bool {
-	return strings.HasSuffix(word, "ati")
+	return hasGrammaticalSuffix(word, "ati")
 }
 
 // ToFutureParticiple returns the future participle form of the given word.

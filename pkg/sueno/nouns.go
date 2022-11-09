@@ -1,7 +1,5 @@
 package sueno
 
-import "strings"
-
 // IsNoun returns true if the given word could be grammatically a noun.
 func IsNoun(word string) bool {
 	return IsSingular(word) || IsPlural(word)
@@ -9,11 +7,7 @@ func IsNoun(word string) bool {
 
 // IsSingular returns true if the given noun is singular.
 func IsSingular(word string) bool {
-	if len(word) < 2 {
-		return false
-	}
-
-	return strings.HasSuffix(word, "o")
+	return hasGrammaticalSuffix(word, "o")
 }
 
 // ToSingularNoun returns the singular noun form of the given word.
@@ -36,11 +30,7 @@ func ToSingularNoun(word string) string {
 
 // IsPlural returns true if the given noun is plural.
 func IsPlural(word string) bool {
-	if len(word) < 3 {
-		return false
-	}
-
-	return strings.HasSuffix(word, "os")
+	return hasGrammaticalSuffix(word, "os")
 }
 
 // ToPluralNoun returns the plural noun form of the given word.
