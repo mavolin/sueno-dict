@@ -71,7 +71,7 @@ block body
                 td.c-entry-field__label
                   label(for="type") Type:
                 td
-                  select(name="definitions[].type", id="type", required)
+                  select(name="definitions.type", id="type", required)
                     option(value="1") Noun
                     option(value="2") Verb
                     option(value="4") Adjective
@@ -89,22 +89,22 @@ block body
                 td.c-entry-field__label
                   label(for="translation") Translation:
                 td
-                  input(type="text", name="definitions[].translation", id="translation", required)
+                  input(type="text", name="definitions.translation", id="translation", required)
               tr.c-entry-field
                 td.c-entry-field__label
                   label(for="definition") Definition:
                 td
-                  input(type="text", name="definitions[].definition", id="definition")
+                  input(type="text", name="definitions.definition", id="definition")
               tr.c-entry-field
                 td.c-entry-field__label
                   label(for="example") Example:
                 td
-                  input(type="text", name="definitions[].example", id="example")
+                  input(type="text", name="definitions.example", id="example")
               tr.c-entry-field
                 td.c-entry-field__label
                   label(for="example_translation") Example Translation:
                 td
-                  input(type="text", name="definitions[].example_translation", id="example_translation")
+                  input(type="text", name="definitions.example_translation", id="example_translation")
 
           button.js-add-definition-btn(type="button", style="margin-top: 10px") Add Definition
           button.js-delete-last-definition-btn(type="button") Delete Last Definition
@@ -123,7 +123,7 @@ block body
                                   <label for="type">Type:</label>
                               </td>
                               <td>
-                                  <select name="definitions[].type" id="type" required>
+                                  <select name="definitions.type" id="type" required>
                                       <option value="1">Noun</option>
                                       <option value="2">Verb</option>
                                       <option value="4">Adjective</option>
@@ -144,7 +144,7 @@ block body
                                   <label for="translation">Translation:</label>
                               </td>
                               <td>
-                                  <input type="text" name="definitions[].translation" id="translation" required>
+                                  <input type="text" name="definitions.translation" id="translation" required>
                               </td>
                           </tr>
                           <tr class="c-entry-field">
@@ -152,7 +152,7 @@ block body
                                   <label for="definition">Definition:</label>
                               </td>
                               <td>
-                                  <input type="text" name="definitions[].definition" id="definition">
+                                  <input type="text" name="definitions.definition" id="definition">
                               </td>
                           </tr>
                           <tr class="c-entry-field">
@@ -160,7 +160,7 @@ block body
                                   <label for="example">Example:</label>
                               </td>
                               <td>
-                                  <input type="text" name="definitions[].example" id="example">
+                                  <input type="text" name="definitions.example" id="example">
                               </td>
                           </tr>
                           <tr class="c-entry-field">
@@ -168,7 +168,7 @@ block body
                                   <label for="example_translation">Example Translation:</label>
                               </td>
                               <td>
-                                  <input type="text" name="definitions[].example_translation" id="example_translation">
+                                  <input type="text" name="definitions.example_translation" id="example_translation">
                               </td>
                           </tr>
                       `
