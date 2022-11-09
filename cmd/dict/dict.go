@@ -46,6 +46,7 @@ func run(log *zap.SugaredLogger) error {
 		Host:     c.DB.Host,
 		User:     c.DB.User,
 		Password: c.DB.Password,
+		Logger:   log.Named("repository.postgres"),
 	})
 	if err != nil {
 		return err
@@ -57,6 +58,8 @@ func run(log *zap.SugaredLogger) error {
 		Repository:        repo,
 		ProtectedUser:     c.Server.ProtectedUser,
 		ProtectedPassword: c.Server.ProtectedPassword,
+
+		Logger: log.Named("router"),
 	})
 	if err != nil {
 		return err

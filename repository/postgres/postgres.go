@@ -3,15 +3,14 @@
 package postgres
 
 import (
-	"log"
-	"os"
 	"strings"
-	"time"
 
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"moul.io/zapgorm2"
 
 	"github.com/mavolin/sueno-dict/repository"
 )
@@ -44,6 +43,9 @@ type Options struct {
 	//
 	// It is required.
 	Password string
+
+	// Logger is the logger used to log sql queries.
+	Logger *zap.SugaredLogger
 }
 
 func Open(o Options) (*Repository, error) {
@@ -64,12 +66,8 @@ func Open(o Options) (*Repository, error) {
 		return nil, errors.Wrap(err, "postgres: could not open database")
 	}
 
-	db.Logger = logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Config{
-		SlowThreshold:             200 * time.Millisecond,
-		LogLevel:                  logger.Info,
-		IgnoreRecordNotFoundError: false,
-		Colorful:                  true,
-	})
+	log := zapgorm2.New(o.Logger.Named("gorm").Desugar())
+	log.LogLevel = logger.Info
 
 	repo := &Repository{DB: db}
 
