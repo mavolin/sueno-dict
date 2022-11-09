@@ -31,11 +31,11 @@ func IsCardinal(word string) bool {
 	}
 }
 
-// ToOrdinal converts the given cardinal to its ordinal form.
+// ToCardinal converts the given ordinal to its cardinal form.
 //
-// num must be a valid number.
-func ToOrdinal(num string) string {
-	return num + "i"
+// word must be a valid ordinal or denominator.
+func ToCardinal(word string) string {
+	return word[:len(word)-1]
 }
 
 func IsOrdinal(word string) bool {
@@ -65,9 +65,52 @@ func IsOrdinal(word string) bool {
 	}
 }
 
-// ToCardinal converts the given ordinal to its cardinal form.
+// ToOrdinal converts the given cardinal to its ordinal form.
 //
-// ordinal must be a valid ordinal.
-func ToCardinal(ordinal string) string {
-	return ordinal[:len(ordinal)-1]
+// word must be a valid cardinal or fraction.
+func ToOrdinal(word string) string {
+	if IsCardinal(word) {
+		return word + "i"
+	}
+
+	return word[:len(word)-1] + "i"
+}
+
+// IsFraction reports whether the given word represents a fraction.
+func IsFraction(word string) bool {
+	switch word {
+	case "nulu":
+		fallthrough
+	case "unou", "unodezu", "unosentu", "unomilu":
+		fallthrough
+	case "duou", "duodezu", "duosentu", "duomilu":
+		fallthrough
+	case "treu", "tredezu", "tresentu", "tremilu":
+		fallthrough
+	case "varu", "vardezu", "varsentu", "varmilu":
+		fallthrough
+	case "funu", "fundezu", "funsentu", "funmilu":
+		fallthrough
+	case "sonu", "sondezu", "sonsentu", "sonmilu":
+		fallthrough
+	case "sepu", "sepdezu", "sepsentu", "sepmilu":
+		fallthrough
+	case "okau", "okadezu", "okasentu", "okamilu":
+		fallthrough
+	case "niniu", "nindezu", "ninsentu", "ninmilu":
+		return true
+	default:
+		return false
+	}
+}
+
+// ToFraction converts the given cardinal to its fraction form.
+//
+// word must be a valid cardinal or ordinal.
+func ToFraction(word string) string {
+	if IsCardinal(word) {
+		return word + "u"
+	}
+
+	return word[:len(word)-1] + "u"
 }
