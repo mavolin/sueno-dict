@@ -111,6 +111,18 @@ func (h *Handler) searchWord(gctx *gin.Context) {
 		}
 
 		query = sueno.ToInfinitive(query)
+
+	// maybe this is an adjective? only their base forms are in the db
+	case sueno.Adjective:
+		// no need to search for the same query again
+		if sueno.IsBaseAdjective(query) {
+			h.renderNotFound(gctx)
+			return
+		}
+
+	// maybe this is an adverb? only the adjective form of constructed adverbs is in the db
+	case sueno.Adverb:
+		query = sueno.ToBaseAdjective(query)
 	default:
 		h.renderNotFound(gctx)
 		return

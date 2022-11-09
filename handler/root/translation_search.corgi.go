@@ -55,7 +55,7 @@ func RenderTranslationSearch(_w _io.Writer, query string, results []repository.T
 		}
 	}
 	_closed = false
-	err = _writeutil.Write(_w, "<div class=\"l-container\"><div class=\"l-page-header\"><a href=\"/\" class=\"c-home-link\">The Sueno Dictionary</a><form action=\"/\" method=\"get\" class=\"c-page-search\"><input type=\"text\" name=\"q\" required aria-label=\"word\" placeholder=\"skribi\"")
+	err = _writeutil.Write(_w, "<div class=\"l-container\"><div class=\"l-page-header\"><a href=\"/\" class=\"c-home-link\"><h1>The Sueno Dictionary</h1></a><form action=\"/\" method=\"get\" class=\"c-page-search\"><input type=\"text\" name=\"q\" required aria-label=\"word\" placeholder=\"skribi\"")
 	if err != nil {
 		return err
 	}

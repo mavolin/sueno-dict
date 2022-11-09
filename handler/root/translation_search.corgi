@@ -8,7 +8,8 @@ block title
 block body
   .l-container
     .l-page-header
-      a.c-home-link(href="/") The Sueno Dictionary
+      a.c-home-link(href="/")
+        h1 The Sueno Dictionary
 
       form.c-page-search(action="/", method="get")
         input.c-page-search__input(type="text", name="q", required, aria-label="word", placeholder="skribi", value=query)

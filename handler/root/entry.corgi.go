@@ -62,7 +62,7 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 	_closed = true
 	{
 		_closed = false
-		err = _writeutil.Write(_w, " class=\"js-delete-form\"></form><div class=\"l-container\"><div class=\"l-page-header\"><a href=\"/\" class=\"c-home-link\">The Sueno Dictionary</a><form action=\"/\" method=\"get\" class=\"c-page-search\"><input type=\"text\" name=\"q\" required aria-label=\"word\" placeholder=\"skribi\" class=\"c-page-search__input\"><button type=\"submit\" value=\"Search\" class=\"c-page-search__button\"><svg fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\" class=\"c-page-search__button-icon\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z\"></path></svg></button></form></div><div class=\"c-entry-section\"><div")
+		err = _writeutil.Write(_w, " class=\"js-delete-form\"></form><div class=\"l-container\"><div class=\"l-page-header\"><a href=\"/\" class=\"c-home-link\"><h2>The Sueno Dictionary</h2></a><form action=\"/\" method=\"get\" class=\"c-page-search\"><input type=\"text\" name=\"q\" required aria-label=\"word\" placeholder=\"skribi\" class=\"c-page-search__input\"><button type=\"submit\" value=\"Search\" class=\"c-page-search__button\"><svg fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\" class=\"c-page-search__button-icon\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z\"></path></svg></button></form></div><div class=\"c-entry-section\"><div")
 		if err != nil {
 			return err
 		}
@@ -82,7 +82,7 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 				}
 				firstDefinition := word.Definitions[i]
 				_closed = true
-				err = _writeutil.Write(_w, " class=\"c-entry\"><div class=\"c-entry__header\"><div class=\"c-entry__title\">")
+				err = _writeutil.Write(_w, " class=\"c-entry\"><div class=\"c-entry__header\"><h2 class=\"c-entry__title\">")
 				if err != nil {
 					return err
 				}
@@ -91,7 +91,7 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 					return err
 				}
 				_closed = false
-				err = _writeutil.Write(_w, "</div><div")
+				err = _writeutil.Write(_w, "</h2><div")
 				if err != nil {
 					return err
 				}
@@ -293,22 +293,14 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 						return err
 					}
 				}
-				_closed = false
-				err = _writeutil.Write(_w, "</div><div")
+				err = _writeutil.Write(_w, "</div>")
 				if err != nil {
 					return err
 				}
 				switch firstDefinition.Type {
 				case sueno.Noun:
-					if !_closed {
-						_closed = true
-						err = _writeutil.Write(_w, " class=\"c-entry-section\">")
-						if err != nil {
-							return err
-						}
-					}
 					_closed = true
-					err = _writeutil.Write(_w, "<div class=\"c-entry-section__body\"><table class=\"c-entry-fields-table\"><tr class=\"c-entry-field\"><td class=\"c-entry-field__label\">Plural:</td><td class=\"c-entry-field__value\">")
+					err = _writeutil.Write(_w, "<div class=\"c-entry-section\"><div class=\"c-entry-section__body\"><table class=\"c-entry-fields-table\"><tr class=\"c-entry-field\"><td class=\"c-entry-field__label\">Plural:</td><td class=\"c-entry-field__value\">")
 					if err != nil {
 						return err
 					}
@@ -316,20 +308,63 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 					if err != nil {
 						return err
 					}
-					err = _writeutil.Write(_w, "</td></tr></table></div>")
+					err = _writeutil.Write(_w, "</td></tr></table></div></div>")
+					if err != nil {
+						return err
+					}
+				case sueno.Adjective:
+					_closed = true
+					err = _writeutil.Write(_w, "<div class=\"c-entry-section\"><div class=\"c-entry-section__body\"><table class=\"c-entry-fields-table\"><tr class=\"c-entry-field\"><td class=\"c-entry-field__label\">Comparative:</td><td class=\"c-entry-field__value\">")
+					if err != nil {
+						return err
+					}
+					err = _writeutil.WriteHTML(_w, sueno.ToComparativeAdjective(word.Word))
+					if err != nil {
+						return err
+					}
+					_closed = true
+					err = _writeutil.Write(_w, "</td></tr><tr class=\"c-entry-field\"><td class=\"c-entry-field__label\">Superlative:</td><td class=\"c-entry-field__value\">")
+					if err != nil {
+						return err
+					}
+					err = _writeutil.WriteHTML(_w, sueno.ToSuperlativeAdjective(word.Word))
+					if err != nil {
+						return err
+					}
+					_closed = true
+					err = _writeutil.Write(_w, "</td></tr></table></div></div><div class=\"c-entry-section\"><h3 class=\"c-entry-section__title\">Adverb</h3><div class=\"c-entry-section__body\"><table class=\"c-entry-fields-table\"><tr class=\"c-entry-field\"><td class=\"c-entry-field__label\">Base:</td><td class=\"c-entry-field__value\">")
+					if err != nil {
+						return err
+					}
+					err = _writeutil.WriteHTML(_w, sueno.ToBaseAdverb(word.Word))
+					if err != nil {
+						return err
+					}
+					_closed = true
+					err = _writeutil.Write(_w, "</td></tr><tr class=\"c-entry-field\"><td class=\"c-entry-field__label\">Comparative:</td><td class=\"c-entry-field__value\">")
+					if err != nil {
+						return err
+					}
+					err = _writeutil.WriteHTML(_w, sueno.ToComparativeAdverb(word.Word))
+					if err != nil {
+						return err
+					}
+					_closed = true
+					err = _writeutil.Write(_w, "</td></tr><tr class=\"c-entry-field\"><td class=\"c-entry-field__label\">Superlative:</td><td class=\"c-entry-field__value\">")
+					if err != nil {
+						return err
+					}
+					err = _writeutil.WriteHTML(_w, sueno.ToSuperlativeAdverb(word.Word))
+					if err != nil {
+						return err
+					}
+					err = _writeutil.Write(_w, "</td></tr></table></div></div>")
 					if err != nil {
 						return err
 					}
 				case sueno.Cardinal:
-					if !_closed {
-						_closed = true
-						err = _writeutil.Write(_w, " class=\"c-entry-section\">")
-						if err != nil {
-							return err
-						}
-					}
 					_closed = true
-					err = _writeutil.Write(_w, "<div class=\"c-entry-section__body\"><table class=\"c-entry-fields-table\"><tr class=\"c-entry-field\"><td class=\"c-entry-field__label\">Ordinal:</td><td class=\"c-entry-field__value\">")
+					err = _writeutil.Write(_w, "<div class=\"c-entry-section\"><div class=\"c-entry-section__body\"><table class=\"c-entry-fields-table\"><tr class=\"c-entry-field\"><td class=\"c-entry-field__label\">Ordinal:</td><td class=\"c-entry-field__value\">")
 					if err != nil {
 						return err
 					}
@@ -337,20 +372,13 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 					if err != nil {
 						return err
 					}
-					err = _writeutil.Write(_w, "</td></tr></table></div>")
-					if err != nil {
-						return err
-					}
-				}
-				if !_closed {
-					_closed = true
-					err = _writeutil.Write(_w, " class=\"c-entry-section\">")
+					err = _writeutil.Write(_w, "</td></tr></table></div></div>")
 					if err != nil {
 						return err
 					}
 				}
 				_closed = true
-				err = _writeutil.Write(_w, "</div><div class=\"c-entry-section\"><div class=\"c-entry-section__title\">Definition of <em>")
+				err = _writeutil.Write(_w, "<div class=\"c-entry-section\"><h3 class=\"c-entry-section__title\">Definition of <em>")
 				if err != nil {
 					return err
 				}
@@ -361,7 +389,7 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 				_closed = true
 				{
 					_closed = false
-					err = _writeutil.Write(_w, "</em></div><div class=\"c-entry-section__body\"><ol")
+					err = _writeutil.Write(_w, "</em></h3><div class=\"c-entry-section__body\"><ol")
 					if err != nil {
 						return err
 					}
@@ -447,7 +475,7 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 				}
 				if firstDefinition.Type == sueno.Verb {
 					_closed = true
-					err = _writeutil.Write(_w, "<div class=\"c-entry-section\"><div class=\"c-entry-section__title\">Conjugation of <em>")
+					err = _writeutil.Write(_w, "<div class=\"c-entry-section\"><h3 class=\"c-entry-section__title\">Conjugation of <em>")
 					if err != nil {
 						return err
 					}
@@ -456,11 +484,11 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 						return err
 					}
 					_closed = true
-					err = _writeutil.Write(_w, "</em></div><div class=\"c-entry-section__body\"><div class=\"l-conjugation-grid\"><div class=\"c-conjugation-group\"><div class=\"c-conjugation-group__title\">Indicative</div><table class=\"c-conjugation-table c-conjucation-group__table\"><tr><td class=\"c-conjugation-table__tense\">Past:</td><td class=\"c-conjugation-table__conjugation\">")
+					err = _writeutil.Write(_w, "</em></h3><div class=\"c-entry-section__body\"><div class=\"l-conjugation-grid\"><div class=\"c-conjugation-group\"><h4 class=\"c-conjugation-group__title\">Indicative</h4><table class=\"c-conjugation-table c-conjucation-group__table\"><tr><td class=\"c-conjugation-table__tense\">Past:</td><td class=\"c-conjugation-table__conjugation\">")
 					if err != nil {
 						return err
 					}
-					err = _writeutil.WriteHTML(_w, sueno.ToPast(word.Word))
+					err = _writeutil.WriteHTML(_w, sueno.ToPastIndicative(word.Word))
 					if err != nil {
 						return err
 					}
@@ -469,7 +497,7 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 					if err != nil {
 						return err
 					}
-					err = _writeutil.WriteHTML(_w, sueno.ToPresent(word.Word))
+					err = _writeutil.WriteHTML(_w, sueno.ToPresentIndicative(word.Word))
 					if err != nil {
 						return err
 					}
@@ -478,12 +506,12 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 					if err != nil {
 						return err
 					}
-					err = _writeutil.WriteHTML(_w, sueno.ToFuture(word.Word))
+					err = _writeutil.WriteHTML(_w, sueno.ToFutureIndicative(word.Word))
 					if err != nil {
 						return err
 					}
 					_closed = true
-					err = _writeutil.Write(_w, "</td></tr></table></div><div class=\"c-conjugation-group\"><div class=\"c-conjugation-group__title\">Subjunctive</div><table class=\"c-conjugation-table c-conjucation-group__table\"><tr><td class=\"c-conjugation-table__tense\">Past:</td><td class=\"c-conjugation-table__conjugation\">")
+					err = _writeutil.Write(_w, "</td></tr></table></div><div class=\"c-conjugation-group\"><h4 class=\"c-conjugation-group__title\">Subjunctive</h4><table class=\"c-conjugation-table c-conjucation-group__table\"><tr><td class=\"c-conjugation-table__tense\">Past:</td><td class=\"c-conjugation-table__conjugation\">")
 					if err != nil {
 						return err
 					}
@@ -510,7 +538,7 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 						return err
 					}
 					_closed = true
-					err = _writeutil.Write(_w, "</td></tr></table></div><div class=\"c-conjugation-group\"><div class=\"c-conjugation-group__title\">Conditional</div><table class=\"c-conjugation-table c-conjucation-group__table\"><tr><td class=\"c-conjugation-table__tense\">Past:</td><td class=\"c-conjugation-table__conjugation\">")
+					err = _writeutil.Write(_w, "</td></tr></table></div><div class=\"c-conjugation-group\"><h4 class=\"c-conjugation-group__title\">Conditional</h4><table class=\"c-conjugation-table c-conjucation-group__table\"><tr><td class=\"c-conjugation-table__tense\">Past:</td><td class=\"c-conjugation-table__conjugation\">")
 					if err != nil {
 						return err
 					}
@@ -537,7 +565,7 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 						return err
 					}
 					_closed = true
-					err = _writeutil.Write(_w, "</td></tr></table></div><div class=\"c-conjugation-group\"><div class=\"c-conjugation-group__title\">Participles</div><table class=\"c-conjugation-table c-conjucation-group__table\"><tr><td class=\"c-conjugation-table__tense\">Past:</td><td class=\"c-conjugation-table__conjugation\">")
+					err = _writeutil.Write(_w, "</td></tr></table></div><div class=\"c-conjugation-group\"><h4 class=\"c-conjugation-group__title\">Participles</h4><table class=\"c-conjugation-table c-conjucation-group__table\"><tr><td class=\"c-conjugation-table__tense\">Past:</td><td class=\"c-conjugation-table__conjugation\">")
 					if err != nil {
 						return err
 					}
@@ -564,7 +592,7 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 						return err
 					}
 					_closed = true
-					err = _writeutil.Write(_w, "</td></tr></table></div><div class=\"c-conjugation-group\"><div class=\"c-conjugation-group__title\">Imperative</div><table class=\"c-conjugation-table c-conjucation-group__table\"><td class=\"c-conjugation-table__tense\">Present:</td><td class=\"c-conjugation-table__conjugation\">")
+					err = _writeutil.Write(_w, "</td></tr></table></div><div class=\"c-conjugation-group\"><h4 class=\"c-conjugation-group__title\">Imperative</h4><table class=\"c-conjugation-table c-conjucation-group__table\"><td class=\"c-conjugation-table__tense\">Present:</td><td class=\"c-conjugation-table__conjugation\">")
 					if err != nil {
 						return err
 					}
@@ -590,7 +618,7 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 	}
 	if len(otherRootWords) > 0 {
 		_closed = true
-		err = _writeutil.Write(_w, "<div class=\"c-entry-section\"><div class=\"c-entry-section__title\">Words with the same root <em>")
+		err = _writeutil.Write(_w, "<div class=\"c-entry-section\"><h3 class=\"c-entry-section__title\">Words with the same root <em>")
 		if err != nil {
 			return err
 		}
@@ -599,7 +627,7 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 			return err
 		}
 		_closed = true
-		err = _writeutil.Write(_w, "</em></div><div class=\"c-entry-section__body\"><ol class=\"c-related-words\">")
+		err = _writeutil.Write(_w, "</em></h3><div class=\"c-entry-section__body\"><ol class=\"c-related-words\">")
 		if err != nil {
 			return err
 		}
