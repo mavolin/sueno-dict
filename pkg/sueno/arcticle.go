@@ -1,7 +1,7 @@
 package sueno
 
 const (
-	DefiniteArticle   = "e"
+	DefiniteArticle   = "o"
 	IndefiniteArticle = "a"
 )
 

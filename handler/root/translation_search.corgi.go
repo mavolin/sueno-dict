@@ -9,7 +9,7 @@ import (
 	"net/url"
 
 	_writeutil "github.com/mavolin/corgi/pkg/writeutil"
-	"github.com/mavolin/sueno-dict/pkl/sueno"
+	"github.com/mavolin/sueno-dict/pkg/sueno"
 	"github.com/mavolin/sueno-dict/repository"
 )
 

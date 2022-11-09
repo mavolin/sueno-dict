@@ -80,6 +80,10 @@
     font-weight: 600;
   }
 
+  &:not(:last-child) {
+    margin-bottom: .7rem;
+  }
+
   &__translation {
     font-weight: 700;
   }
@@ -89,7 +93,6 @@
 
   &__example-line {
     display: block;
-    margin-top: .3rem;
   }
 
   &__example {

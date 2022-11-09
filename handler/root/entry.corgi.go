@@ -9,7 +9,7 @@ import (
 	"net/url"
 
 	_writeutil "github.com/mavolin/corgi/pkg/writeutil"
-	"github.com/mavolin/sueno-dict/pkl/sueno"
+	"github.com/mavolin/sueno-dict/pkg/sueno"
 	"github.com/mavolin/sueno-dict/repository"
 )
 
@@ -50,10 +50,19 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 			return err
 		}
 	}
+	_closed = false
+	err = _writeutil.Write(_w, "<form style=\"display: none\" method=\"post\"")
+	if err != nil {
+		return err
+	}
+	err = _writeutil.WriteAttr(_w, "action", fmt.Sprintf("/%d/delete", word.ID), false)
+	if err != nil {
+		return err
+	}
 	_closed = true
 	{
 		_closed = false
-		err = _writeutil.Write(_w, "<div class=\"l-container\"><div class=\"l-page-header\"><a href=\"/\" class=\"c-home-link\">The Sueno Dictionary</a><form action=\"/\" method=\"get\" class=\"c-page-search\"><input type=\"text\" name=\"q\" required aria-label=\"word\" placeholder=\"skribi\" class=\"c-page-search__input\"><button type=\"submit\" value=\"Search\" class=\"c-page-search__button\"><svg fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\" class=\"c-page-search__button-icon\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z\"></path></svg></button></form></div><div class=\"c-entry-section\"><div")
+		err = _writeutil.Write(_w, " class=\"js-delete-form\"></form><div class=\"l-container\"><div class=\"l-page-header\"><a href=\"/\" class=\"c-home-link\">The Sueno Dictionary</a><form action=\"/\" method=\"get\" class=\"c-page-search\"><input type=\"text\" name=\"q\" required aria-label=\"word\" placeholder=\"skribi\" class=\"c-page-search__input\"><button type=\"submit\" value=\"Search\" class=\"c-page-search__button\"><svg fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\" class=\"c-page-search__button-icon\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z\"></path></svg></button></form></div><div class=\"c-entry-section\"><div")
 		if err != nil {
 			return err
 		}

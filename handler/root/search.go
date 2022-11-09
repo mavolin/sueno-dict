@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/mavolin/sueno-dict/pkl/sueno"
+	"github.com/mavolin/sueno-dict/pkg/sueno"
 	"github.com/mavolin/sueno-dict/repository"
 )
 

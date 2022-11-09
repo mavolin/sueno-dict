@@ -4,7 +4,7 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/mavolin/sueno-dict/pkl/sueno"
+	"github.com/mavolin/sueno-dict/pkg/sueno"
 )
 
 type Repository interface {
@@ -16,6 +16,7 @@ type Repository interface {
 	Word(context.Context, WordID) (*Word, error)
 	SearchWord(context.Context, string) (*Word, error)
 	SearchTranslation(context.Context, string) ([]TranslatedWord, error)
+	DeleteWord(context.Context, WordID) error
 }
 
 // ============================================================================
@@ -48,7 +49,7 @@ type (
 		Word string
 		Root string
 
-		Definitions   []Definition `gorm:"foreignKey:WordID"`
+		Definitions   []Definition `gorm:"foreignKey:WordID;constraint:OnDelete:update"`
 		CompoundWords []Word       `gorm:"-"`
 	}
 

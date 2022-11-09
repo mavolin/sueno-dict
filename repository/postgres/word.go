@@ -13,7 +13,7 @@ type (
 	word struct {
 		repository.Word
 
-		CompoundWords []compoundWord
+		CompoundWords []compoundWord `gorm:"foreignKey:WordID;references:ID;constraint:OnDelete:cascade"`
 	}
 
 	compoundWord struct {
@@ -221,6 +221,17 @@ func (r *Repository) SearchTranslation(ctx context.Context, query string) ([]rep
 		})
 
 	return tws, errors.WithMessage(err, "postgres: SearchTranslation")
+}
+
+func (r *Repository) DeleteWord(ctx context.Context, id repository.WordID) error {
+	res := r.DB.
+		WithContext(ctx).
+		Delete(&repository.Word{}, id)
+	if res.Error != nil {
+		return errors.Wrap(res.Error, "postgres: DeleteWord")
+	}
+
+	return nil
 }
 
 func (r *Repository) migrate() error {

@@ -15,5 +15,5 @@ func NewHandler(repo repository.Repository) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(r *gin.RouterGroup) {
-
+	r.POST("/:id/delete", h.ProcessDelete)
 }

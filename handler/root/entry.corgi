@@ -6,6 +6,8 @@ block title
   | #{word.Word}#![&mdash;]Definition
 
 block body
+  form.js-delete-form(style="display: none", method="post", action=fmt.Sprintf("/%d/delete", word.ID))
+
   .l-container
     .l-page-header
       a.c-home-link(href="/") The Sueno Dictionary
