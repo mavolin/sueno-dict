@@ -192,7 +192,7 @@ func (r *Repository) SearchTranslation(ctx context.Context, query string) ([]rep
 				Preload("CompoundWords", func(db *gorm.DB) *gorm.DB {
 					return db.Order("index")
 				}).
-				Preload("CompoundWords.Word").
+				Preload("CompoundWords.CompoundWord").
 				Order("(select type from definitions where definitions.word_id = words.id order by definitions.id limit 1)").
 				Order("word").
 				Find(&wws)
