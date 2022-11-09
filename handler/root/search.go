@@ -3,6 +3,7 @@ package root
 import (
 	"context"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -187,6 +188,10 @@ func (h *Handler) renderEntry(gctx *gin.Context, w repository.Word) {
 //go:generate corgi translation_search.corgi
 
 func (h *Handler) renderTranslationSearchResult(gctx *gin.Context, ts []repository.TranslatedWord) {
+	if len(ts) == 1 {
+		gctx.Redirect(http.StatusFound, "/?q="+url.QueryEscape(ts[0].Word.Word)+"&type=word")
+	}
+
 	if err := RenderTranslationSearch(gctx.Writer, gctx.Query("q"), ts); err != nil {
 		gctx.AbortWithError(http.StatusInternalServerError, err)
 		return
