@@ -9,6 +9,7 @@ import (
 	"net/url"
 
 	_writeutil "github.com/mavolin/corgi/pkg/writeutil"
+	"github.com/mavolin/sueno-dict/pkg/sueno"
 	"github.com/mavolin/sueno-dict/repository"
 )
 
@@ -393,7 +394,7 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 					if err != nil {
 						return err
 					}
-					err = _writeutil.WriteHTML(_w, sueno.ToDenominator(word.Word))
+					err = _writeutil.WriteHTML(_w, sueno.ToFraction(word.Word))
 					if err != nil {
 						return err
 					}

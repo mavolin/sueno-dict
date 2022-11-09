@@ -111,7 +111,7 @@ block body
                         td.c-entry-field__value= sueno.ToOrdinal(word.Word)
                       tr.c-entry-field
                         td.c-entry-field__label Fraction:
-                        td.c-entry-field__value= sueno.ToDenominator(word.Word)
+                        td.c-entry-field__value= sueno.ToFraction(word.Word)
 
 
             .c-entry-section
