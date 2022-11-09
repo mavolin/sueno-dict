@@ -125,8 +125,12 @@ func (h *Handler) searchWord(gctx *gin.Context) {
 	case sueno.Adverb:
 		query = sueno.ToBaseAdjective(query)
 	default:
-		h.renderNotFound(gctx)
-		return
+		if sueno.IsOrdinal(query) || sueno.IsFraction(query) {
+			query = sueno.ToCardinal(query)
+		} else {
+			h.renderNotFound(gctx)
+			return
+		}
 	}
 
 	w, err = h.repo.SearchWord(ctx, query)
