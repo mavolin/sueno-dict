@@ -9,7 +9,6 @@ import (
 	"net/url"
 
 	_writeutil "github.com/mavolin/corgi/pkg/writeutil"
-	"github.com/mavolin/sueno-dict/pkg/sueno"
 	"github.com/mavolin/sueno-dict/repository"
 )
 
@@ -299,14 +298,31 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 				}
 				switch firstDefinition.Type {
 				case sueno.Noun:
-					_closed = true
-					err = _writeutil.Write(_w, "<div class=\"c-entry-section\"><div class=\"c-entry-section__body\"><table class=\"c-entry-fields-table\"><tr class=\"c-entry-field\"><td class=\"c-entry-field__label\">Plural:</td><td class=\"c-entry-field__value\">")
+					_closed = false
+					err = _writeutil.Write(_w, "<div class=\"c-entry-section\"><div class=\"c-entry-section__body\"><table class=\"c-entry-fields-table\"><tr class=\"c-entry-field\"><td class=\"c-entry-field__label\">Plural:</td><td")
 					if err != nil {
 						return err
 					}
-					err = _writeutil.WriteHTML(_w, sueno.ToPluralNoun(word.Word))
-					if err != nil {
-						return err
+					if word.CustomPlural != "" {
+						_closed = true
+						err = _writeutil.Write(_w, " class=\"c-entry-field__value\">")
+						if err != nil {
+							return err
+						}
+						err = _writeutil.WriteHTML(_w, word.CustomPlural)
+						if err != nil {
+							return err
+						}
+					} else {
+						_closed = true
+						err = _writeutil.Write(_w, " class=\"c-entry-field__value\">")
+						if err != nil {
+							return err
+						}
+						err = _writeutil.WriteHTML(_w, sueno.ToPluralNoun(word.Word))
+						if err != nil {
+							return err
+						}
 					}
 					err = _writeutil.Write(_w, "</td></tr></table></div></div>")
 					if err != nil {
@@ -369,6 +385,15 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 						return err
 					}
 					err = _writeutil.WriteHTML(_w, sueno.ToOrdinal(word.Word))
+					if err != nil {
+						return err
+					}
+					_closed = true
+					err = _writeutil.Write(_w, "</td></tr><tr class=\"c-entry-field\"><td class=\"c-entry-field__label\">Fraction:</td><td class=\"c-entry-field__value\">")
+					if err != nil {
+						return err
+					}
+					err = _writeutil.WriteHTML(_w, sueno.ToDenominator(word.Word))
 					if err != nil {
 						return err
 					}
