@@ -79,25 +79,25 @@ func ToOrdinal(word string) string {
 // IsFraction reports whether the given word represents a fraction.
 func IsFraction(word string) bool {
 	switch word {
-	case "nulte":
+	case "nulje":
 		fallthrough
-	case "unote", "unodezte", "unosentte", "unomilte":
+	case "unoje", "unodezje", "unosentje", "unomilje":
 		fallthrough
-	case "duote", "duodezte", "duosentte", "duomilte":
+	case "duoje", "duodezje", "duosentje", "duomilje":
 		fallthrough
-	case "trete", "tredezte", "tresentte", "tremilte":
+	case "treje", "tredezje", "tresentje", "tremilje":
 		fallthrough
-	case "varte", "vardezte", "varsentte", "varmilte":
+	case "varje", "vardezje", "varsentje", "varmilje":
 		fallthrough
-	case "funte", "fundezte", "funsentte", "funmilte":
+	case "funje", "fundezje", "funsentje", "funmilje":
 		fallthrough
-	case "sonte", "sondezte", "sonsentte", "sonmilte":
+	case "sonje", "sondezje", "sonsentje", "sonmilje":
 		fallthrough
-	case "septe", "sepdezte", "sepsentte", "sepmilte":
+	case "sepje", "sepdezje", "sepsentje", "sepmilje":
 		fallthrough
-	case "okate", "okadezte", "okasentte", "okamilte":
+	case "okaje", "okadezje", "okasentje", "okamilje":
 		fallthrough
-	case "ninte", "nindezte", "ninsentte", "ninmilte":
+	case "ninje", "nindezje", "ninsentje", "ninmilje":
 		return true
 	default:
 		return false
@@ -109,8 +109,8 @@ func IsFraction(word string) bool {
 // word must be a valid cardinal or ordinal.
 func ToFraction(word string) string {
 	if IsOrdinal(word) {
-		return word[:len(word)-1] + "te"
+		return word[:len(word)-1] + "je"
 	}
 
-	return word + "te"
+	return word + "je"
 }
