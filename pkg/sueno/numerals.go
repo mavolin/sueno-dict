@@ -69,7 +69,7 @@ func IsOrdinal(word string) bool {
 //
 // word must be a valid cardinal or fraction.
 func ToOrdinal(word string) string {
-	if IsOrdinal(word) {
+	if IsFraction(word) {
 		return word[:len(word)-1] + "i"
 	}
 
@@ -79,25 +79,25 @@ func ToOrdinal(word string) string {
 // IsFraction reports whether the given word represents a fraction.
 func IsFraction(word string) bool {
 	switch word {
-	case "nulu":
+	case "nulte":
 		fallthrough
-	case "unou", "unodezu", "unosentu", "unomilu":
+	case "unote", "unodezte", "unosentte", "unomilte":
 		fallthrough
-	case "duou", "duodezu", "duosentu", "duomilu":
+	case "duote", "duodezte", "duosentte", "duomilte":
 		fallthrough
-	case "treu", "tredezu", "tresentu", "tremilu":
+	case "trete", "tredezte", "tresentte", "tremilte":
 		fallthrough
-	case "varu", "vardezu", "varsentu", "varmilu":
+	case "varte", "vardezte", "varsentte", "varmilte":
 		fallthrough
-	case "funu", "fundezu", "funsentu", "funmilu":
+	case "funte", "fundezte", "funsentte", "funmilte":
 		fallthrough
-	case "sonu", "sondezu", "sonsentu", "sonmilu":
+	case "sonte", "sondezte", "sonsentte", "sonmilte":
 		fallthrough
-	case "sepu", "sepdezu", "sepsentu", "sepmilu":
+	case "septe", "sepdezte", "sepsentte", "sepmilte":
 		fallthrough
-	case "okau", "okadezu", "okasentu", "okamilu":
+	case "okate", "okadezte", "okasentte", "okamilte":
 		fallthrough
-	case "niniu", "nindezu", "ninsentu", "ninmilu":
+	case "ninte", "nindezte", "ninsentte", "ninmilte":
 		return true
 	default:
 		return false
@@ -109,8 +109,8 @@ func IsFraction(word string) bool {
 // word must be a valid cardinal or ordinal.
 func ToFraction(word string) string {
 	if IsOrdinal(word) {
-		return word[:len(word)-1] + "u"
+		return word[:len(word)-1] + "te"
 	}
 
-	return word + "u"
+	return word + "te"
 }
