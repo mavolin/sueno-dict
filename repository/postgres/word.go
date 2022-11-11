@@ -171,7 +171,7 @@ func (r *Repository) SearchTranslation(ctx context.Context, query string) ([]rep
 				Order("(select type from definitions as ds " +
 					"where ds.word_id = definitions.word_id " +
 					"order by ds.id limit 1)").
-				Order("(select word from words where words.id = definitions.id)").
+				Order("(select word from words where words.id = definitions.word_id)").
 				Limit(75).
 				Find(&ds)
 			if res.Error != nil {

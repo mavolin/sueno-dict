@@ -68,6 +68,8 @@ func Open(o Options) (*Repository, error) {
 
 	log := zapgorm2.New(o.Logger.Named("gorm").Desugar())
 	log.LogLevel = logger.Info
+	log.IgnoreRecordNotFoundError = true
+	db.Logger = log
 
 	repo := &Repository{DB: db}
 
