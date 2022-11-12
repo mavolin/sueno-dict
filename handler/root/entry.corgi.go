@@ -228,6 +228,18 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 					if err != nil {
 						return err
 					}
+				case sueno.Idiom:
+					if !_closed {
+						_closed = true
+						err = _writeutil.Write(_w, " class=\"c-entry__type\">")
+						if err != nil {
+							return err
+						}
+					}
+					err = _writeutil.Write(_w, "idiom")
+					if err != nil {
+						return err
+					}
 				case sueno.Other:
 					if !_closed {
 						_closed = true
@@ -734,6 +746,11 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 				}
 			case sueno.Abbreviation:
 				err = _writeutil.Write(_w, "abbreviation")
+				if err != nil {
+					return err
+				}
+			case sueno.Idiom:
+				err = _writeutil.Write(_w, "idiom")
 				if err != nil {
 					return err
 				}

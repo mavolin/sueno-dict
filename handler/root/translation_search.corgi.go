@@ -148,6 +148,11 @@ func RenderTranslationSearch(_w _io.Writer, query string, results []repository.T
 			if err != nil {
 				return err
 			}
+		case sueno.Idiom:
+			err = _writeutil.Write(_w, "idiom")
+			if err != nil {
+				return err
+			}
 		case sueno.Other:
 			err = _writeutil.Write(_w, "other")
 			if err != nil {

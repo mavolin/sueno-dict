@@ -46,6 +46,8 @@ block body
                 | number
               case sueno.Abbreviation
                 | abbreviation
+              case sueno.Idiom
+                | idiom
               case sueno.Other
                 | other
             | )
