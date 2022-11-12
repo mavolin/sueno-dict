@@ -17,6 +17,7 @@ const (
 	Cardinal
 	Ordinal
 	Abbreviation
+	Idiom
 	Other
 )
 
