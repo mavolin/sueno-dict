@@ -83,6 +83,7 @@ block body
                     option(value="10") Article
                     option(value="11") Cardinal
                     option(value="13") Abbreviation
+                    option(value="14") Idiom
                     option(value="14") Other
 
               tr.c-entry-field
@@ -135,7 +136,8 @@ block body
                                       <option value="10">Article</option>
                                       <option value="11">Cardinal</option>
                                       <option value="13">Abbreviation</option>
-                                      <option value="14">Other</option>
+                                      <option value="14">Idiom</option>
+                                      <option value="15">Other</option>
                                   </select>
                               </td>
                           </tr>
