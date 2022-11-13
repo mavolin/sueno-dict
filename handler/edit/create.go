@@ -61,7 +61,7 @@ func (h *Handler) ProcessCreate(gctx *gin.Context) {
 				return
 			}
 
-			if cw == nil {
+			if cw == nil || len(cw.CompoundWords) > 0 {
 				gctx.Status(http.StatusBadRequest)
 				return
 			}
