@@ -43,7 +43,7 @@ block body
                                 <label for="compound_word">Word:</label>
                             </td>
                             <td>
-                                <input type="text" name="compound_words[]" id="compound_word" required>
+                                <input type="text" name="compound_words" id="compound_word" required>
                             </td>
                         </tr>
                     `
