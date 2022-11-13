@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -53,11 +54,11 @@ func (h *Handler) searchWord(gctx *gin.Context) {
 		return
 	}
 
-	// There are no ordinal pages, just cardinal pages.
-	// Since IsOrdinal identifies ordinals not just by their ending but by
-	// matching the entire word, we can safely check this before doing any
-	// queries.
-	if sueno.IsOrdinal(query) {
+	// There are no ordinal and cardinal pages, just cardinal pages.
+	// Since IsOrdinal and IsFraction identify numbers not just by their ending
+	// but by matching the entire word, we can safely check this before doing
+	// any queries.
+	if sueno.IsOrdinal(strings.ToLower(query)) || sueno.IsFraction(strings.ToLower(query)) {
 		query = sueno.ToCardinal(query)
 	}
 
@@ -88,11 +89,13 @@ func (h *Handler) searchWord(gctx *gin.Context) {
 	}
 
 	// search yielded no results, try to normalize the query
+	query = strings.ToLower(query)
+
 	switch sueno.Type(query) {
 	// maybe this was a plural? only singular nouns are in the db
 	case sueno.Noun:
 		// no need to search for the same query again
-		if sueno.IsSingular(query) {
+		if sueno.IsSingular(query) && query == gctx.Query("q") {
 			h.renderNotFound(gctx)
 			return
 		}
@@ -106,7 +109,7 @@ func (h *Handler) searchWord(gctx *gin.Context) {
 	// maybe this is a verb? only their infinitive verb forms are in the db
 	case sueno.Verb:
 		// no need to search for the same query again
-		if sueno.IsInfinitiveMood(query) {
+		if sueno.IsInfinitiveMood(query) && query == gctx.Query("q") {
 			h.renderNotFound(gctx)
 			return
 		}
@@ -116,7 +119,7 @@ func (h *Handler) searchWord(gctx *gin.Context) {
 	// maybe this is an adjective? only their base forms are in the db
 	case sueno.Adjective:
 		// no need to search for the same query again
-		if sueno.IsBaseAdjective(query) {
+		if sueno.IsBaseAdjective(query) && query == gctx.Query("q") {
 			h.renderNotFound(gctx)
 			return
 		}
@@ -125,7 +128,8 @@ func (h *Handler) searchWord(gctx *gin.Context) {
 	case sueno.Adverb:
 		query = sueno.ToBaseAdjective(query)
 	default:
-		if sueno.IsOrdinal(query) || sueno.IsFraction(query) {
+		// possibly a number 1 000 000+
+		if strings.HasSuffix(query, "i") || strings.HasSuffix(query, "je") {
 			query = sueno.ToCardinal(query)
 		} else {
 			h.renderNotFound(gctx)
