@@ -265,14 +265,28 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 					return err
 				}
 				if len(word.CompoundWords) > 0 {
-					_closed = true
-					err = _writeutil.Write(_w, "<div class=\"c-entry__compound-words\">")
+					_closed = false
+					err = _writeutil.Write(_w, "<div")
 					if err != nil {
 						return err
 					}
+					if !_closed {
+						_closed = true
+						err = _writeutil.Write(_w, " class=\"c-entry__compound-words\">")
+						if err != nil {
+							return err
+						}
+					}
 					for i, cw := range word.CompoundWords {
+						if i > 0 {
+							_closed = true
+							err = _writeutil.Write(_w, "<span class=\"c-entry__compound-word-seperator\"> + </span>")
+							if err != nil {
+								return err
+							}
+						}
 						_closed = false
-						err = _writeutil.Write(_w, "<div class=\"c-entry__compound-word\"><a")
+						err = _writeutil.Write(_w, "<a")
 						if err != nil {
 							return err
 						}
@@ -281,7 +295,7 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 							return err
 						}
 						_closed = true
-						err = _writeutil.Write(_w, ">")
+						err = _writeutil.Write(_w, " class=\"c-entry__compound-word\">")
 						if err != nil {
 							return err
 						}
@@ -289,15 +303,9 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 						if err != nil {
 							return err
 						}
-						err = _writeutil.Write(_w, "</a></div>")
+						err = _writeutil.Write(_w, "</a>")
 						if err != nil {
 							return err
-						}
-						if i > 0 {
-							err = _writeutil.Write(_w, " + ")
-							if err != nil {
-								return err
-							}
 						}
 					}
 					err = _writeutil.Write(_w, "</div>")
