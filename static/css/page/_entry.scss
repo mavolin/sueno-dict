@@ -34,6 +34,14 @@
     font-weight: 500;
     color: colors.$indigo11;
   }
+
+  &__compound-word {
+    @include fonts.roboto-slab;
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 2px;
+  }
 }
 
 .c-entry-section {
