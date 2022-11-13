@@ -13,7 +13,7 @@ import (
 	"github.com/mavolin/sueno-dict/repository"
 )
 
-func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repository.Word) (err error) {
+func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repository.Word, compoundWords []repository.Word) (err error) {
 	var (
 		_buf    _bytes.Buffer
 		_closed bool
@@ -678,6 +678,131 @@ func RenderEntry(_w _io.Writer, word repository.Word, otherRootWords []repositor
 			return err
 		}
 		for _, w := range otherRootWords {
+			_closed = false
+			err = _writeutil.Write(_w, "<li class=\"c-related-word\"><a")
+			if err != nil {
+				return err
+			}
+			err = _writeutil.WriteAttr(_w, "href", fmt.Sprintf("/?q=%s&type=word", url.QueryEscape(w.Word)), false)
+			if err != nil {
+				return err
+			}
+			_closed = true
+			err = _writeutil.Write(_w, " class=\"c-related-word__link\">")
+			if err != nil {
+				return err
+			}
+			err = _writeutil.WriteHTML(_w, w.Word)
+			if err != nil {
+				return err
+			}
+			_closed = true
+			err = _writeutil.Write(_w, "</a><span class=\"c-related-word__type\"> (")
+			if err != nil {
+				return err
+			}
+			switch w.Definitions[0].Type {
+			case sueno.Noun:
+				err = _writeutil.Write(_w, "noun")
+				if err != nil {
+					return err
+				}
+			case sueno.Verb:
+				err = _writeutil.Write(_w, "verb")
+				if err != nil {
+					return err
+				}
+			case sueno.Adjective:
+				err = _writeutil.Write(_w, "adjective")
+				if err != nil {
+					return err
+				}
+			case sueno.Adverb:
+				err = _writeutil.Write(_w, "adverb")
+				if err != nil {
+					return err
+				}
+			case sueno.Preposition:
+				err = _writeutil.Write(_w, "preposition")
+				if err != nil {
+					return err
+				}
+			case sueno.Conjunction:
+				err = _writeutil.Write(_w, "conjunction")
+				if err != nil {
+					return err
+				}
+			case sueno.Interjection:
+				err = _writeutil.Write(_w, "interjection")
+				if err != nil {
+					return err
+				}
+			case sueno.Pronoun:
+				err = _writeutil.Write(_w, "pronoun")
+				if err != nil {
+					return err
+				}
+			case sueno.Article:
+				err = _writeutil.Write(_w, "article")
+				if err != nil {
+					return err
+				}
+			case sueno.Cardinal:
+				err = _writeutil.Write(_w, "number")
+				if err != nil {
+					return err
+				}
+			case sueno.Abbreviation:
+				err = _writeutil.Write(_w, "abbreviation")
+				if err != nil {
+					return err
+				}
+			case sueno.Idiom:
+				err = _writeutil.Write(_w, "idiom")
+				if err != nil {
+					return err
+				}
+			case sueno.Other:
+				err = _writeutil.Write(_w, "other")
+				if err != nil {
+					return err
+				}
+			}
+			_closed = true
+			err = _writeutil.Write(_w, ")</span><span class=\"c-related-word__translation\">&mdash;")
+			if err != nil {
+				return err
+			}
+			err = _writeutil.WriteHTML(_w, w.Definitions[0].Translation)
+			if err != nil {
+				return err
+			}
+			err = _writeutil.Write(_w, "</span></li>")
+			if err != nil {
+				return err
+			}
+		}
+		err = _writeutil.Write(_w, "</ol></div></div>")
+		if err != nil {
+			return err
+		}
+	}
+	if len(compoundWords) > 0 {
+		_closed = true
+		err = _writeutil.Write(_w, "<div class=\"c-entry-section\"><h3 class=\"c-entry-section__title\">Compound words containing <em>")
+		if err != nil {
+			return err
+		}
+		err = _writeutil.WriteHTML(_w, word.Word)
+		if err != nil {
+			return err
+		}
+		_closed = true
+		err = _writeutil.Write(_w, "</em></h3><div class=\"c-entry-section__body\"><ol class=\"c-related-words\">")
+		if err != nil {
+			return err
+		}
+		for _, w := range compoundWords {
 			_closed = false
 			err = _writeutil.Write(_w, "<li class=\"c-related-word\"><a")
 			if err != nil {

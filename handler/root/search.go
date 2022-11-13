@@ -185,7 +185,16 @@ func (h *Handler) renderEntry(gctx *gin.Context, w repository.Word) {
 		}
 	}
 
-	if err := RenderEntry(gctx.Writer, w, otherRootWords); err != nil {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	compoundWords, err := h.repo.CompoundWordsContaining(ctx, w.ID)
+	if err != nil {
+		gctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	if err = RenderEntry(gctx.Writer, w, otherRootWords, compoundWords); err != nil {
 		gctx.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}

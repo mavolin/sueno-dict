@@ -16,6 +16,7 @@ type Repository interface {
 	Word(context.Context, WordID) (*Word, error)
 	SearchWord(context.Context, string) (*Word, error)
 	SearchTranslation(context.Context, string) ([]TranslatedWord, error)
+	CompoundWordsContaining(context.Context, WordID) ([]Word, error)
 	DeleteWord(context.Context, WordID) error
 }
 

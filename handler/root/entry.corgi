@@ -1,6 +1,6 @@
 extend "base"
 
-func RenderEntry(word repository.Word, otherRootWords []repository.Word)
+func RenderEntry(word repository.Word, otherRootWords []repository.Word, compoundWords []repository.Word)
 
 block title
   | #{word.Word}#![&mdash;]Definition
@@ -208,6 +208,46 @@ block body
         .c-entry-section__body
           ol.c-related-words
             for _, w range otherRootWords
+              li.c-related-word
+                a.c-related-word__link(href=fmt.Sprintf("/?q=%s&type=word", url.QueryEscape(w.Word)))= w.Word
+                span.c-related-word__type
+                  |  (
+                  switch w.Definitions[0].Type
+                    case sueno.Noun
+                      | noun
+                    case sueno.Verb
+                      | verb
+                    case sueno.Adjective
+                      | adjective
+                    case sueno.Adverb
+                      | adverb
+                    case sueno.Preposition
+                      | preposition
+                    case sueno.Conjunction
+                      | conjunction
+                    case sueno.Interjection
+                      | interjection
+                    case sueno.Pronoun
+                      | pronoun
+                    case sueno.Article
+                      | article
+                    case sueno.Cardinal
+                      | number
+                    case sueno.Abbreviation
+                      | abbreviation
+                    case sueno.Idiom
+                      | idiom
+                    case sueno.Other
+                      | other
+                  | )
+                span.c-related-word__translation #![&mdash;]#{w.Definitions[0].Translation}
+
+    if len(compoundWords) > 0
+      .c-entry-section
+        h3.c-entry-section__title Compound words containing #em{word.Word}
+        .c-entry-section__body
+          ol.c-related-words
+            for _, w range compoundWords
               li.c-related-word
                 a.c-related-word__link(href=fmt.Sprintf("/?q=%s&type=word", url.QueryEscape(w.Word)))= w.Word
                 span.c-related-word__type

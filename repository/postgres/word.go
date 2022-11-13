@@ -226,6 +226,30 @@ func (r *Repository) SearchTranslation(ctx context.Context, query string) ([]rep
 	return tws, errors.WithMessage(err, "postgres: SearchTranslation")
 }
 
+func (r *Repository) CompoundWordsContaining(ctx context.Context, id repository.WordID) ([]repository.Word, error) {
+	var wws []word
+
+	res := r.DB.
+		WithContext(ctx).
+		Where("id in (select word_id from compound_words where compound_word_id = ?)", id).
+		Preload("Definitions").
+		Preload("CompoundWords", func(db *gorm.DB) *gorm.DB {
+			return db.Order("index")
+		}).
+		Preload("CompoundWords.CompoundWord").
+		Find(&wws)
+	if res.Error != nil {
+		return nil, errors.Wrap(res.Error, "postgres: CompoundWordsContaining")
+	}
+
+	ws := make([]repository.Word, len(wws))
+	for i, ww := range wws {
+		ws[i] = ww.toRepoType()
+	}
+
+	return ws, nil
+}
+
 func (r *Repository) DeleteWord(ctx context.Context, id repository.WordID) error {
 	res := r.DB.
 		WithContext(ctx).
