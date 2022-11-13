@@ -46,7 +46,7 @@ func ParseWordID(s string) (WordID, error) {
 type (
 	Word struct {
 		ID   WordID `gorm:"primaryKey;autoIncrement;not null"`
-		Word string `gorm:"not null"`
+		Word string `gorm:"not null;unique"`
 		Root string `gorm:"not null;default:''"`
 
 		// CustomPlural allows overriding the plural form of the word.
