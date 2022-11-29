@@ -2,6 +2,7 @@ package edit
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"net/url"
 	"time"
@@ -26,6 +27,10 @@ type (
 	CreateForm struct {
 		Word string `form:"word"`
 		Root string `form:"root"`
+
+		GenderNeutralTranslation string `form:"gender_neutral_translation"`
+		FemaleTranslation        string `form:"female_translation"`
+		MaleTranslation          string `form:"male_translation"`
 
 		CompoundWords []string `form:"compound_words"`
 
@@ -104,13 +109,70 @@ func (h *Handler) ProcessCreate(gctx *gin.Context) {
 		}
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
-	defer cancel()
+	if f.Word == "" && f.GenderNeutralTranslation != "" {
+		def := w.Definitions[0]
 
-	if _, err := h.repo.CreateWord(ctx, w); err != nil {
-		gctx.AbortWithError(http.StatusInternalServerError, err)
-		return
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+
+		neutral := w
+		neutral.Word = w.Root + "uno"
+		neutral.Definitions = []repository.Definition{
+			{
+				Type:               sueno.Noun,
+				Translation:        f.GenderNeutralTranslation,
+				Example:            fmt.Sprintf(def.Example, neutral.Word),
+				ExampleTranslation: fmt.Sprintf(def.ExampleTranslation, f.GenderNeutralTranslation),
+			},
+		}
+
+		if _, err := h.repo.CreateWord(ctx, neutral); err != nil {
+			gctx.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+
+		female := w
+		female.Word = w.Root + "ano"
+		female.Definitions = []repository.Definition{
+			{
+				Type:               sueno.Noun,
+				Translation:        f.FemaleTranslation,
+				Example:            fmt.Sprintf(def.Example, female.Word),
+				ExampleTranslation: fmt.Sprintf(def.ExampleTranslation, f.FemaleTranslation),
+			},
+		}
+
+		if _, err := h.repo.CreateWord(ctx, female); err != nil {
+			gctx.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+
+		male := w
+		male.Word = w.Root + "eno"
+		male.Definitions = []repository.Definition{
+			{
+				Type:               sueno.Noun,
+				Translation:        f.MaleTranslation,
+				Example:            fmt.Sprintf(def.Example, male.Word),
+				ExampleTranslation: fmt.Sprintf(def.ExampleTranslation, f.MaleTranslation),
+			},
+		}
+
+		if _, err := h.repo.CreateWord(ctx, male); err != nil {
+			gctx.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+
+		gctx.Redirect(http.StatusFound, "/?q="+url.QueryEscape(w.Root+"uno"))
+	} else {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
+		if _, err := h.repo.CreateWord(ctx, w); err != nil {
+			gctx.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+
+		gctx.Redirect(http.StatusFound, "/?q="+url.QueryEscape(w.Word))
 	}
-
-	gctx.Redirect(http.StatusFound, "/?q="+url.QueryEscape(w.Word))
 }

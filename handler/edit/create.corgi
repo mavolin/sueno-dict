@@ -22,6 +22,32 @@ block body
                 label(for="root") Root:
               td
                 input(type="text", name="root", id="root")
+            tr.c-entry-field
+              td.c-entry-field__label
+                label(for="definition") Gender-Neutral Translation:
+              td
+                input(type="text", name="gender_neutral_translation", id="gender_neutral_translation")
+                script.
+                  let copyGenderNeutralTranslation = true
+
+                  const genderNeutralFormEl = document.querySelector('##gender_neutral_translation')
+                  genderNeutralFormEl.addEventListener('input', (ev) => {
+                      if (copyGenderNeutralTranslation) {
+                          document.querySelector('##female_translation').value = 'female '+genderNeutralFormEl.value
+                          document.querySelector('##male_translation').value = 'male ' + genderNeutralFormEl.value
+                      }
+                  })
+            tr.c-entry-field
+              td.c-entry-field__label
+                label(for="definition") Female Translation:
+              td
+                input(type="text", name="female_translation", id="female_translation", oninput="copyGenderNeutralTranslation = false")
+            tr.c-entry-field
+              td.c-entry-field__label
+                label(for="definition") Male Translation:
+              td
+                input(type="text", name="male_translation", id="male_translation", oninput="copyGenderNeutralTranslation = false")
+
 
       .c-entry-section
         h2.c-entry-section__title Compound Word Information
@@ -90,7 +116,7 @@ block body
                 td.c-entry-field__label
                   label(for="translation") Translation:
                 td
-                  input(type="text", name="definitions.translation", id="translation", required)
+                  input(type="text", name="definitions.translation", id="translation")
               tr.c-entry-field
                 td.c-entry-field__label
                   label(for="definition") Definition:
@@ -146,7 +172,7 @@ block body
                                   <label for="translation">Translation:</label>
                               </td>
                               <td>
-                                  <input type="text" name="definitions.translation" id="translation" required>
+                                  <input type="text" name="definitions.translation" id="translation">
                               </td>
                           </tr>
                           <tr class="c-entry-field">
